@@ -1,0 +1,1608 @@
+{
+  "info": {
+    "name": "Dashboards (P4)",
+    "description": "Analyses sauvegardées, dashboards, partage, vue publique et détection des valeurs aberrantes. À exécuter dans l’ordre après le login (P1) qui renseigne {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "datasetId",
+      "value": "1"
+    },
+    {
+      "key": "shareEmail",
+      "value": "bob@example.com"
+    },
+    {
+      "key": "analysisId",
+      "value": ""
+    },
+    {
+      "key": "analysisId2",
+      "value": ""
+    },
+    {
+      "key": "dashboardId",
+      "value": ""
+    },
+    {
+      "key": "publicToken",
+      "value": ""
+    },
+    {
+      "key": "oldPublicToken",
+      "value": ""
+    },
+    {
+      "key": "shareUserId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Dashboards",
+      "description": "Dossier P4",
+      "item": [
+        {
+          "name": "Analyses",
+          "item": [
+            {
+              "name": "Créer une analyse (CA par région)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                      "pm.collectionVariables.set('analysisId', pm.response.json().id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"CA par région\",\n  \"description\": \"Somme des montants par région\",\n  \"datasetId\": \"{{datasetId}}\",\n  \"config\": {\n    \"query\": {\n      \"metrics\": [\n        {\n          \"op\": \"sum\",\n          \"field\": \"montant\",\n          \"alias\": \"ca\"\n        },\n        {\n          \"op\": \"count\"\n        }\n      ],\n      \"groupBy\": [\n        \"region\"\n      ],\n      \"orderBy\": {\n        \"field\": \"ca\",\n        \"dir\": \"desc\"\n      },\n      \"limit\": 20\n    },\n    \"chart\": {\n      \"type\": \"bar\",\n      \"x\": \"region\",\n      \"y\": [\n        \"ca\"\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Enregistre une analyse. `config.query` suit le contrat du moteur de requêtes (P3), `config.chart` le type de graphique."
+              }
+            },
+            {
+              "name": "Créer une analyse (série temporelle)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                      "pm.collectionVariables.set('analysisId2', pm.response.json().id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"CA mensuel\",\n  \"datasetId\": \"{{datasetId}}\",\n  \"config\": {\n    \"query\": {\n      \"metrics\": [\n        {\n          \"op\": \"sum\",\n          \"field\": \"montant\",\n          \"alias\": \"ca\"\n        }\n      ],\n      \"timeBucket\": {\n        \"field\": \"date\",\n        \"granularity\": \"month\",\n        \"alias\": \"mois\"\n      }\n    },\n    \"chart\": {\n      \"type\": \"line\",\n      \"x\": \"mois\",\n      \"y\": [\n        \"ca\"\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Créer une analyse invalide (400)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Erreurs détaillées', () => pm.expect(pm.response.json().details.length).to.be.above(0));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"\",\n  \"datasetId\": \"abc\",\n  \"config\": {\n    \"query\": {\n      \"metrics\": [\n        {\n          \"op\": \"sum\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lister mes analyses",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses?scope=mine&q=&limit=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses"
+                  ],
+                  "query": [
+                    {
+                      "key": "scope",
+                      "value": "mine"
+                    },
+                    {
+                      "key": "q",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Lister les analyses partagées avec moi",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses?scope=shared",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses"
+                  ],
+                  "query": [
+                    {
+                      "key": "scope",
+                      "value": "shared"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Détail d’une analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Modifier une analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"CA par région (2024)\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Exécuter une analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Lignes renvoyées', () => pm.expect(pm.response.json().rows).to.be.an('array'));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}/run",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}",
+                    "run"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"field\": \"region\",\n      \"op\": \"in\",\n      \"value\": [\n        \"Nord\",\n        \"Sud\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboards",
+          "item": [
+            {
+              "name": "Créer un dashboard",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                      "pm.collectionVariables.set('dashboardId', pm.response.json().id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Pilotage ventes\",\n  \"description\": \"CA par région et par mois\",\n  \"layout\": [\n    {\n      \"id\": \"w1\",\n      \"type\": \"analysis\",\n      \"analysisId\": \"{{analysisId}}\",\n      \"w\": 2,\n      \"h\": 2\n    },\n    {\n      \"id\": \"w2\",\n      \"type\": \"analysis\",\n      \"analysisId\": \"{{analysisId2}}\",\n      \"w\": 2,\n      \"h\": 2\n    },\n    {\n      \"id\": \"w3\",\n      \"type\": \"outliers\",\n      \"datasetId\": \"{{datasetId}}\",\n      \"column\": \"montant\",\n      \"method\": \"iqr\",\n      \"w\": 4,\n      \"h\": 3\n    }\n  ],\n  \"globalFilters\": [\n    {\n      \"id\": \"reg\",\n      \"label\": \"Région\",\n      \"field\": \"region\",\n      \"type\": \"select\"\n    },\n    {\n      \"id\": \"per\",\n      \"label\": \"Période\",\n      \"field\": \"date\",\n      \"type\": \"date-range\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lister mes dashboards",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards?scope=mine",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards"
+                  ],
+                  "query": [
+                    {
+                      "key": "scope",
+                      "value": "mine"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Lister les dashboards partagés avec moi",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards?scope=shared",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards"
+                  ],
+                  "query": [
+                    {
+                      "key": "scope",
+                      "value": "shared"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Détail d’un dashboard",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Modifier la mise en page",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"layout\": [\n    {\n      \"id\": \"w1\",\n      \"type\": \"analysis\",\n      \"analysisId\": \"{{analysisId}}\",\n      \"w\": 4,\n      \"h\": 1\n    },\n    {\n      \"id\": \"w2\",\n      \"type\": \"analysis\",\n      \"analysisId\": \"{{analysisId2}}\",\n      \"w\": 2,\n      \"h\": 2\n    },\n    {\n      \"id\": \"w3\",\n      \"type\": \"outliers\",\n      \"datasetId\": \"{{datasetId}}\",\n      \"column\": \"montant\",\n      \"w\": 2,\n      \"h\": 3\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Calculer le dashboard (sans filtre)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Tous les widgets calculés', () => pm.response.json().widgets.forEach((w) => pm.expect(w.status).to.eql('ok')));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/render",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "render"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Calculer le dashboard (filtres globaux)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/render",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "render"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"reg\": [\n      \"Nord\"\n    ],\n    \"per\": {\n      \"from\": \"2024-01-01\",\n      \"to\": \"2024-06-30\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Les valeurs sont indexées par identifiant de filtre global : select → liste, date-range → {from, to}, range → {min, max}."
+              }
+            },
+            {
+              "name": "Valeurs d’un filtre « select »",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/filters/reg/options",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "filters",
+                    "reg",
+                    "options"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Partage et publication",
+          "item": [
+            {
+              "name": "Partager l’analyse par e-mail",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                      "const s = pm.response.json().shares; if (s.length) pm.collectionVariables.set('shareUserId', s[0].id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}/shares",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}",
+                    "shares"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{shareEmail}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lister les partages de l’analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}/shares",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}",
+                    "shares"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Partager le dashboard par e-mail",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 201', () => pm.response.to.have.status(201));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/shares",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "shares"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{shareEmail}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Partager avec un e-mail inconnu (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 404', () => pm.response.to.have.status(404));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/shares",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "shares"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"personne@inconnu.test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Rendre le dashboard public",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.collectionVariables.set('publicToken', pm.response.json().publicToken);",
+                      "pm.test('Jeton généré', () => pm.expect(pm.response.json().publicToken).to.be.a('string'));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"visibility\": \"public\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Retirer le partage de l’analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}/shares/{{shareUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}",
+                    "shares",
+                    "{{shareUserId}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Vue publique (sans authentification)",
+          "item": [
+            {
+              "name": "Dashboard public",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Aucune donnée personnelle', () => { const j = pm.response.json(); pm.expect(j.owner).to.be.undefined; pm.expect(j.publicToken).to.be.undefined; });"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/public/dashboards/{{publicToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "public",
+                    "dashboards",
+                    "{{publicToken}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              }
+            },
+            {
+              "name": "Calculer le dashboard public",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/public/dashboards/{{publicToken}}/render",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "public",
+                    "dashboards",
+                    "{{publicToken}}",
+                    "render"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"reg\": [\n      \"Sud\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              }
+            },
+            {
+              "name": "Valeurs d’un filtre (public)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/public/dashboards/{{publicToken}}/filters/reg/options",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "public",
+                    "dashboards",
+                    "{{publicToken}}",
+                    "filters",
+                    "reg",
+                    "options"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              }
+            },
+            {
+              "name": "Régénérer le lien public",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.collectionVariables.set('oldPublicToken', pm.collectionVariables.get('publicToken'));",
+                      "pm.collectionVariables.set('publicToken', pm.response.json().publicToken);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}/public-token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}",
+                    "public-token"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ancien lien révoqué (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 404', () => pm.response.to.have.status(404));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/public/dashboards/{{oldPublicToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "public",
+                    "dashboards",
+                    "{{oldPublicToken}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              }
+            },
+            {
+              "name": "Repasser le dashboard en privé",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Jeton supprimé', () => pm.expect(pm.response.json().publicToken).to.be.null);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"visibility\": \"private\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lien après passage en privé (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 404', () => pm.response.to.have.status(404));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/public/dashboards/{{publicToken}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "public",
+                    "dashboards",
+                    "{{publicToken}}"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Valeurs aberrantes (fonctionnalité avancée)",
+          "item": [
+            {
+              "name": "Méthodes disponibles",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers/methods",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers",
+                    "methods"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Datasets accessibles",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers/datasets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers",
+                    "datasets"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Colonnes d’un dataset",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers/datasets/{{datasetId}}/columns",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers",
+                    "datasets",
+                    "{{datasetId}}",
+                    "columns"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Détecter (IQR)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Résultat complet', () => { const j = pm.response.json(); pm.expect(j).to.have.keys('datasetId','column','method','methodLabel','threshold','n','outlierCount','outlierRate','stats','bounds','outliers','truncated','bins','overflow','warning'); });"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"datasetId\": \"{{datasetId}}\",\n  \"column\": \"montant\",\n  \"method\": \"iqr\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Détecter (MAD, seuil 3)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"datasetId\": \"{{datasetId}}\",\n  \"column\": \"montant\",\n  \"method\": \"mad\",\n  \"threshold\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Détecter avec filtre",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/outliers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "outliers"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"datasetId\": \"{{datasetId}}\",\n  \"column\": \"montant\",\n  \"method\": \"zscore\",\n  \"filters\": [\n    {\n      \"field\": \"region\",\n      \"op\": \"eq\",\n      \"value\": \"Nord\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Administration",
+          "item": [
+            {
+              "name": "Statistiques dashboards (admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/stats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "stats"
+                  ]
+                },
+                "description": "Nécessite un jeton administrateur ({{adminToken}}).",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Tous les dashboards (admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 200', () => pm.response.to.have.status(200));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards?scope=all",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards"
+                  ],
+                  "query": [
+                    {
+                      "key": "scope",
+                      "value": "all"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyage",
+          "item": [
+            {
+              "name": "Supprimer le dashboard",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 204', () => pm.response.to.have.status(204));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Supprimer les analyses",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 204', () => pm.response.to.have.status(204));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Supprimer la 2e analyse",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 204', () => pm.response.to.have.status(204));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/analyses/{{analysisId2}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "analyses",
+                    "{{analysisId2}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Dashboard supprimé (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Statut 404', () => pm.response.to.have.status(404));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboards/{{dashboardId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboards",
+                    "{{dashboardId}}"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

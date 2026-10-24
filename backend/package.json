@@ -1,0 +1,22 @@
+{
+  "name": "platform-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "[FUSION P1/P4] package.json minimal ajouté pour faire tourner le module P4 ; à compléter par P1 (auth, admin, server).",
+  "scripts": {
+    "db:init": "node --env-file-if-exists=.env database/init-db.js",
+    "db:seed": "node --env-file-if-exists=.env database/init-db.js --seed",
+    "dev:dashboards": "node --env-file-if-exists=.env src/modules/dashboards/dev-server.js",
+    "token:demo": "node --env-file-if-exists=.env database/demo-token.js",
+    "token:dashboards":"node --env-file-if-exists=.env src/modules/dashboards/dev-server.js --token",
+    "test:dashboards": "node --test \"src/modules/dashboards/tests/*.test.js\""
+  },
+  "engines": {
+    "node": ">=22.9"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  }
+}
