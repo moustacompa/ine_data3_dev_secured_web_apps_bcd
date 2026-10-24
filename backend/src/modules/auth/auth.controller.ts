@@ -109,3 +109,11 @@ export const login = async (req: Request, res: Response) => {
         });
     }
 }
+
+// 3. Contrôleur pour récupérer le profil de la session courante
+export const getMe = async (req: Request, res: Response) => {
+  return res.status(200).json({
+    success: true,
+    data: { user: req.user },
+  });
+};
