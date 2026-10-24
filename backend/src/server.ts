@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { query } from './config/db.js';
 import authRouter from './modules/auth/auth.routes.js'
+import adminRouter from './modules/admin/admin.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,6 +36,7 @@ app.get('/api/health', async (_req, res) => {
 
 // 3. Montage des modules de routes
 app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 // 4. Démarrage du serveur
 app.listen(PORT, () => {
