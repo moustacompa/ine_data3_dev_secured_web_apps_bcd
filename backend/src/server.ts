@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { query } from './config/db.js';
+import authRouter from './modules/auth/auth.routes.js'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,13 +27,16 @@ app.get('/api/health', async (_req, res) => {
     } catch (error) {
         console.error('Erreur de connexion à la BDD:', error);
         res.status(500).json({
-            statut: 'ERROR',
+            status: 'ERROR',
             message: 'Erreur de connexion à la base de données',
         });
     }
 });
 
-// 3. Démarrage du serveur
+// 3. Montage des modules de routes
+app.use('/api/auth', authRouter);
+
+// 4. Démarrage du serveur
 app.listen(PORT, () => {
     console.log(`🚀 Serveur Backend démarré sur http://localhost:${PORT}`);
 });
