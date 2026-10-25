@@ -3,6 +3,8 @@ import cors from 'cors';
 import { query } from './config/db.js';
 import authRouter from './modules/auth/auth.routes.js';
 import adminRouter from './modules/admin/admin.routes.js';
+// Module P3 (Analyse & Visualisation)
+import analyticsRouter from './modules/analytics/analytics.routes.js';
 // Module P4 (Dashboards & Partage)
 import dashboardsPkg from './modules/dashboards/index.js';
 
@@ -41,6 +43,7 @@ app.get('/api/health', async (_req, res) => {
 // 3. Montage des modules de routes
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/analytics', analyticsRouter);
 
 // Montage du module P4 (Dashboards & Analyses)
 if (typeof mountDashboards === 'function') {
