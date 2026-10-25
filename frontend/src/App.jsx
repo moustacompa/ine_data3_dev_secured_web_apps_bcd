@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Navbar } from './components/Navbar';
+import DatasetsPage from './features/datasets/DatasetsPage';
+import ImportDatasetPage from './features/datasets/ImportDatasetPage';
+import DatasetExplorePage from './features/datasets/DatasetExplorePage';
 
 // P1 Pages (Auth & Admin)
 import { HomePage } from './features/home/HomePage';
@@ -45,6 +48,9 @@ export function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/datasets" element={<ProtectedRoute><DatasetsPage /></ProtectedRoute>} />
+              <Route path="/datasets/import" element={<ProtectedRoute><ImportDatasetPage /></ProtectedRoute>} />
+              <Route path="/datasets/:id" element={<ProtectedRoute><DatasetExplorePage /></ProtectedRoute>} />
               <Route
                 path="/dashboards"
                 element={

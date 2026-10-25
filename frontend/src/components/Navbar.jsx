@@ -44,6 +44,7 @@ export const Navbar = () => {
             {/* Accessible to connected analysts and admin */}
             {isAuthenticated && (
               <>
+                <Link to="/datasets" style={{ color: '#475569', fontWeight: 500 }}>Datasets</Link>
                 <Link to="/dashboards" style={{ color: '#475569', fontWeight: 500 }}>
                   Dashboards (P4)
                 </Link>

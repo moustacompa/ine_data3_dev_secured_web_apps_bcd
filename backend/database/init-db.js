@@ -1,4 +1,7 @@
-'use strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import pg from 'pg';
 
 /**
  * [FUSION P1/P4] Initialisation d'un PostgreSQL installé directement sur le PC (sans Docker).
@@ -8,17 +11,16 @@
  * Lit DATABASE_URL (fichier backend/.env, voir .env.example ; défaut :
  * postgres://postgres:postgres@localhost:5432/platform_db), crée la base si
  * elle n'existe pas, puis exécute les scripts dans l'ordre :
- *   schema.sql (P1) -> 020_datasets_placeholder.sql (P2 provisoire) -> 040_dashboards.sql (P4)
+ *   schema.sql (P1) -> 020_datasets_placeholder.sql (P2) -> 040_dashboards.sql (P4)
  *
  * Les scripts sont idempotents (IF NOT EXISTS) : on peut relancer sans risque.
  */
-const fs = require('fs');
-const path = require('path');
-const { Client } = require('pg');
+const { Client } = pg;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const DEFAULT_URL = 'postgres://postgres:postgres@localhost:5432/platform_db';
 const SEED = process.argv.includes('--seed'); // npm run db:seed : ajoute les données de démo
-const SCRIPTS = ['schema.sql', '020_datasets_placeholder.sql', '040_dashboards.sql', ...(SEED ? ['050_demo_seed.sql'] : [])];
+const SCRIPTS = ['schema.sql', '020_datasets_placeholder.sql', '040_dashboards.sql', ...(SEED ? ['050_demo_seed.sql', '060_datasets_seed.sql'] : [])];
 
 async function ensureDatabase(url) {
   const dbName = decodeURIComponent(url.pathname.slice(1));
