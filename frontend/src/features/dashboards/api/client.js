@@ -8,7 +8,7 @@ import axios from 'axios';
  *   import client from '../../../api/axios';
  * et garder `publicClient` (sans jeton) pour la vue publique.
  */
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const client = axios.create({ baseURL });
 client.interceptors.request.use((config) => {
