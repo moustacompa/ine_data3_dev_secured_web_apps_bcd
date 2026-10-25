@@ -64,3 +64,4 @@ Voici le déroulé exact à présenter au jury pour un impact maximal :
 > 1. *Le middleware `authenticateToken` pour protéger leurs routes en 1 seule ligne de code.*  
 > 2. *La fonction `logActivity()` qu'ils ont simplement appelée lors de leurs actions clés.*  
 > 3. *L'intercepteur Axios et `<ProtectedRoute>` sur React pour qu'ils n'aient aucune tuyauterie d'authentification à réécrire. La compatibilité a été telle que mon camarade P4 a pu intégrer son module de dashboards en s'appuyant à 100 % sur mes spécifications."*
+

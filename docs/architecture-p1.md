@@ -107,3 +107,4 @@ erDiagram
 3. **Garde de Route (`<ProtectedRoute>`) :**
    - Bloque le rendu des composants privés si l'utilisateur est anonyme.
    - Restreint l'accès aux pages réservées aux administrateurs (`requiredRole="admin"`).
+
