@@ -389,22 +389,69 @@ Pour faire tourner le backend avec les fonctionnalités d'authentification et de
 # Port du serveur Express
 PORT=5000
 
-# Base de données PostgreSQL
-DATABASE_URL=postgres://user:password@localhost:5432/platform_db
+# Base de données PostgreSQL (port 5435 dans docker-compose pour éviter tout conflit)
+DATABASE_URL=postgres://dev_user:dev_password123!@localhost:5435/platform_db
 
 # Clés secrètes & Cryptographie
-JWT_SECRET=votre_cle_secrete_ultra_robuste_au_moins_32_caracteres
+JWT_SECRET=super_secret_jwt_key_pour_notre_projet_securise_2026!
 JWT_EXPIRES_IN=24h
 BCRYPT_SALT_ROUNDS=10
 
 # Sécurité & CORS
-CORS_ORIGIN=http://localhost:3000
+CLIENT_URL=http://localhost:3000
 NODE_ENV=development
 ```
 
 ---
 
-## 🤝 8. Procédure pour l'équipe (P2, P3, P4)
+## ⚡ 8. Démarrage Rapide & Comptes de Test (Intégration Réalisée)
+
+L'intégration conjointe de **P1 (Auth & Admin)** et **P4 (Dashboards & Partage)** est opérationnelle.
+
+### 1. Démarrer la Base de Données & l'Adminer
+```bash
+docker compose up -d
+```
+- PostgreSQL écoute sur `localhost:5435`.
+- Interface graphique Adminer accessible sur `http://localhost:8080`.
+
+### 2. Démarrer le Backend (Node.js / Express / TypeScript)
+```bash
+cd backend
+npm install
+npm run dev
+```
+- API active sur `http://localhost:5000` (Routes Auth, Admin, Analyses, Dashboards).
+- Vérification statique : `npm run typecheck` (0 erreur).
+- Tests automatisés : `npm run test:dashboards` (20/20 pass).
+
+### 3. Démarrer le Frontend (React / Vite)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+- Interface accessible sur `http://localhost:3000`.
+
+### 🔑 Comptes de démonstration pré-configurés
+| Email | Mot de passe | Rôle | Privilèges & Accès |
+|---|---|---|---|
+| `alice@example.com` | `Password123!` | `admin` | Accès complet : Profil, Analyses, Dashboards, Console Admin (`/admin`) |
+| `bob@example.com` | `Password123!` | `analyst` | Data Analyst : Profil, Analyses, Dashboards (accès `/admin` interdit en 403) |
+
+---
+
+## 📄 9. Livrables & Rapports Word (.docx) Disponibles
+
+Dans le dossier `docs/` se trouvent tous les livrables exigés pour la soutenance du 26 octobre 2026 :
+- [`docs/rapport-p1.docx`](docs/rapport-p1.docx) : **Rapport officiel individuel de P1** (Périmètre, architecture BDD/Backend/Frontend, mesures de cybersécurité, plan de soutenance).
+- [`docs/rapport-fusion-p1-p4.docx`](docs/rapport-fusion-p1-p4.docx) : **Rapport officiel conjoint P1 & P4** (Intégration globale, modèle relationnel à 8 tables, moteur de détection d'outliers, dashboarding).
+- [`docs/architecture-p1.md`](docs/architecture-p1.md) : Spécification technique détaillée de sécurité et d'architecture.
+- [`docs/soutenance-p1.md`](docs/soutenance-p1.md) : Fiche mémo pour la soutenance orale (scénario de démo et réponses aux questions du jury).
+
+---
+
+## 🤝 10. Procédure pour l'équipe (P2, P3)
 
 1. Pour toute question sur l'intégration du token ou des autorisations, référez-vous à la section **3. Outils transverses livrés**.
 2. N'essayez pas de contourner `authenticateToken` en codant votre propre système de vérification d'utilisateur.
