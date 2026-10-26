@@ -1,0 +1,581 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[top=2.3cm,bottom=2.3cm,left=2.2cm,right=2.2cm,headheight=14pt]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit, backgrounds, shadows}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{hyperref}
+
+% Palette de couleurs corporate & académique
+\definecolor{brandblue}{HTML}{1F4E79}
+\definecolor{techblue}{HTML}{2563EB}
+\definecolor{navyhead}{HTML}{0F2942}
+\definecolor{darkslate}{HTML}{0F172A}
+\definecolor{lightbg}{HTML}{F8FAFC}
+\definecolor{cardbg}{HTML}{FFFFFF}
+\definecolor{bordergray}{HTML}{CBD5E1}
+\definecolor{auditpurple}{HTML}{7C3AED}
+\definecolor{dbgreen}{HTML}{0D9488}
+\definecolor{tableheader}{HTML}{1F4E79}
+\definecolor{tablerowalt}{HTML}{F1F5F9}
+
+% Configuration des liens hypertexte
+\hypersetup{
+    colorlinks=true,
+    linkcolor=brandblue,
+    filecolor=brandblue,      
+    urlcolor=techblue,
+    citecolor=brandblue,
+    pdftitle={Rapport Général de Réalisation — VIZENTRA},
+    pdfauthor={Mamadou Tahirou DIALLO (P1), Hassan BENLMOUDEN (P2), Hafsa BENABOU (P3), Moustapha COMPAORE (P4)},
+    pdfsubject={Plateforme Collaborative d'Analyse et de Visualisation de Données},
+    pdfkeywords={VIZENTRA, INPT, ANRT, Full Stack, Sécurité, React, Express, PostgreSQL}
+}
+
+% Formatage des titres de sections
+\titleformat{\section}{\color{brandblue}\LARGE\bfseries}{\thesection.}{0.8em}{}[\titlerule]
+\titleformat{\subsection}{\color{techblue}\Large\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\color{navyhead}\large\bfseries}{\thesubsubsection}{0.5em}{}
+
+% Entêtes et pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray!80!black}\textbf{VIZENTRA} — Rapport de Projet (Promotion 2027)}
+\fancyhead[R]{\small\color{gray!80!black}\textbf{INPT / ANRT}}
+\fancyfoot[L]{\scriptsize\color{gray}\textit{Encadré par Pr. Abdelhay HAQIQ}}
+\fancyfoot[C]{\scriptsize\color{gray}Soutenance du 26 Octobre 2026}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% =============================================================================
+% PAGE DE GARDE PRESTIGE (ACADÉMIQUE INPT / ANRT)
+% =============================================================================
+\begin{titlepage}
+    \begin{center}
+        % Logos institutionnels
+        \begin{minipage}{0.45\textwidth}
+            \begin{flushleft}
+                \includegraphics[height=1.85cm]{/home/mrtds/Documents/WebDev/projet/docs/images/logo_inpt.png}
+            \end{flushleft}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.45\textwidth}
+            \begin{flushright}
+                \includegraphics[height=1.85cm]{/home/mrtds/Documents/WebDev/projet/docs/images/logo_anrt.jpg}
+            \end{flushright}
+        \end{minipage}
+
+        \vspace{0.4cm}
+        {\small\textbf{INSTITUT NATIONAL DES POSTES ET TÉLÉCOMMUNICATIONS (INPT)}}\\[2pt]
+        {\footnotesize SOUS LA TUTELLE DE L'AGENCE NATIONALE DE RÉGLEMENTATION DES TÉLÉCOMMUNICATIONS (ANRT)}\\[3pt]
+        {\footnotesize Filière Ingénierie des Données \& Systèmes Connectés — \textbf{Promotion 2027}}
+
+        \vspace{0.6cm}
+        \hrule height 1.5pt \relax
+        \vspace{0.4cm}
+
+        {\fontsize{30}{36}\selectfont \textbf{\color{brandblue}VIZENTRA}}\\[4pt]
+        {\large\textit{\color{gray!80!black}From Data to Decisions}}\\[10pt]
+        {\Large \textbf{\color{darkslate}RAPPORT GÉNÉRAL DE RÉALISATION DU PROJET FULL STACK}}\\[4pt]
+        {\large \textbf{\color{techblue}Plateforme Collaborative d’Analyse, de Visualisation et de Partage de Données}}
+
+        \vspace{0.4cm}
+        \hrule height 0.8pt \relax
+        \vspace{0.5cm}
+
+        % Cadre Encadrement & Module
+        \begin{tcolorbox}[colback=lightbg,colframe=brandblue!60,arc=4pt,left=8pt,right=8pt,top=6pt,bottom=6pt]
+            \centering
+            \textbf{Module :} Développement et Sécurité des Applications Web Modernes\\[3pt]
+            \textbf{Sous la direction du Professeur :} \textbf{\color{brandblue}Pr. Abdelhay HAQIQ}\\[3pt]
+            \textbf{Dépôt GitHub Officiel :} \href{https://github.com/moustacompa/ine_data3_dev_secured_web_apps_bcd}{\url{https://github.com/moustacompa/ine_data3_dev_secured_web_apps_bcd}}
+        \end{tcolorbox}
+
+        \vspace{0.4cm}
+        {\large \textbf{\color{navyhead}Équipe d'Ingénierie \& Répartition des Rôles :}}\\[8pt]
+
+        \renewcommand{\arraystretch}{1.25}
+        \begin{tabularx}{\textwidth}{>{\bfseries\color{brandblue}}p{4.2cm} >{\bfseries}p{4.4cm} X}
+            \toprule
+            \rowcolor{tableheader}
+            \color{white}Pôle \& Module & \color{white}Responsable & \color{white}Périmètre Fonctionnel \& Technique \\
+            \midrule
+            P1 : IAM \& Sécurité & Mamadou Tahirou DIALLO & Socle Docker, Authentification JWT, RBAC, Piste d'audit Fail-Safe et Console d'administration \\
+            \rowcolor{tablerowalt}
+            P2 : Datasets \& Ingestion & Hassan BENLMOUDEN & Ingestion CSV/JSON, inférence des types, score qualité de complétude et exploration interactive \\
+            P3 : Analyse \& Moteur & Hafsa BENABOU & Moteur d'agrégations SQL, séries temporelles, métriques de rang et graphiques Recharts \\
+            \rowcolor{tablerowalt}
+            P4 : Dashboards \& Partage & Moustapha COMPAORE & Éditeur de dashboards, filtres globaux, détection d'outliers (IQR/Z-Score/MAD) et liens publics \\
+            \bottomrule
+        \end{tabularx}
+
+        \vfill
+        {\small \textbf{Date de Livraison du Code :} 25 Octobre 2026 \quad$\vert$\quad \textbf{Date de Soutenance Orale :} 26 Octobre 2026}
+    \end{center}
+\end{titlepage}
+
+% =============================================================================
+% SOMMAIRE GÉNÉRAL ISOLÉ SUR SA PROPRE PAGE
+% =============================================================================
+\clearpage
+\thispagestyle{empty}
+\vspace*{0.5cm}
+\renewcommand{\contentsname}{\Huge \textbf{\color{brandblue}Sommaire Général}}
+\tableofcontents
+\vspace{0.8cm}
+\hrule height 1pt
+\clearpage
+
+% =============================================================================
+% 1. RÉSUMÉ EXÉCUTIF
+% =============================================================================
+\section{Résumé Exécutif \& Vision Globale de la Plateforme}
+
+La plateforme \textbf{VIZENTRA} est une application web Full Stack collaborative conçue pour centraliser, explorer, analyser, visualiser et diffuser des jeux de données d’entreprise hétérogènes. Face au constat récurrent d'analyses dispersées sur des tableurs isolés, VIZENTRA convertit les données brutes en informations actionnables grâce à des tableaux de bord dynamiques, interactifs et gouvernés par une stricte politique de cybersécurité.
+
+Le projet concrétise l'assemblage modulaire et homogène des travaux de quatre étudiants-ingénieurs de l'\textbf{INPT} (Promotion 2027) :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{P1 (Mamadou Tahirou DIALLO) :} Établit le socle d'infrastructure (PostgreSQL 16 Alpine conteneurisé), l'identité numérique (JWT HS256, hachage bcrypt 10 rounds), le contrôle d'accès RBAC (\textit{Visiteur}, \textit{Analyste}, \textit{Administrateur}), la journalisation d'audit Fail-Safe \texttt{logActivity()} et la console de supervision administrative.
+    \item \textbf{P2 (Hassan BENLMOUDEN) :} Prend en charge l'ingestion multiformat (CSV auto-délimité, JSON), la détection dynamique des types, l'analyse automatique de complétude (score qualité) et l'exploration interactive paginée et filtrée.
+    \item \textbf{P3 (Hafsa BENABOU) :} Fournit le moteur analytique SQL multi-dimensions (sommes, moyennes, extrêmes, effectifs, médianes, séries temporelles \textit{time-bucketed}, parts de marché) et la bibliothèque de composants graphiques interactifs (Recharts).
+    \item \textbf{P4 (Moustapha COMPAORE) :} Orchestre l'éditeur de tableaux de bord personnalisables (grille jusqu'à 24 widgets), les filtres globaux temps réel, la diffusion sécurisée (privée, partagée, publique révocable) et la détection statistique d'anomalies (IQR, Z-score, MAD).
+\end{itemize}
+
+Grâce à des contrats d'interfaces stricts, un intercepteur Axios centralisé et une suite de tests unitaires validée à 100\% (20/20 tests réussis et compilation TypeScript sans erreur), VIZENTRA constitue une solution robuste, sécurisée et directement déployable.
+
+% =============================================================================
+% 2. CONTEXTE ET CYCLE DE LA DONNÉE
+% =============================================================================
+\section{Contexte Métier, Besoins Utilisateurs \& Cycle de la Donnée}
+
+Dans les organisations modernes, la gouvernance de la donnée se heurte à un cloisonnement hermétique entre outils bureautiques et systèmes de bases de données. VIZENTRA répond à cette rupture d'outillage en instrumentant un cycle complet en 5 étapes sans discontinuité technique :
+
+\begin{enumerate}[leftmargin=1.5cm, label=\textbf{\color{brandblue}Étape \arabic* —}]
+    \item \textbf{Ingestion des Données :} Téléversement sécurisé de fichiers sources (CSV, JSON). Détection automatique des séparateurs et typage inféré sans altération de schéma relationnel.
+    \item \textbf{Exploration \& Qualité :} Inspection tabulaire, recherche plein texte, filtres dynamiques et diagnostic immédiat de santé (cellules manquantes, taux de complétude).
+    \item \textbf{Analyse Statistique :} Définition déclarative de requêtes analytiques paramétrées : métriques, regroupements (\texttt{GROUP BY}), découpage temporel et tris ordonnés.
+    \item \textbf{Visualisation Modulaire :} Traduction graphique instantanée (barres, courbes chronologiques, diagrammes circulaires, cartes KPI) et composition de tableaux de bord multi-indicateurs.
+    \item \textbf{Partage Sécurisé :} Conservation privée, invitation nominative de collaborateurs en lecture seule, ou génération d'URL publique révocable protégée par jeton cryptographique.
+\end{enumerate}
+
+\subsection{Typologie des Utilisateurs et Matrice des Besoins}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{5.5cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Profil Utilisateur & \color{white}Droits \& Périmètre Fonctionnel & \color{white}Actions Clés Typiques \\
+    \midrule
+    Visiteur Anonyme & Consultation restreinte de tableaux de bord publics & Lecture d'un dashboard via URL par token, inscription \\
+    \rowcolor{tablerowalt}
+    Data Analyst & Cycle complet de valorisation sur ses données et partages & Import CSV/JSON, exploration, création d'analyses, publication \\
+    Administrateur & Gouvernance globale des comptes, supervision et audit & Gestion des rôles, suspension de comptes, inspection logs de sécurité \\
+    \bottomrule
+\end{tabularx}
+\caption{Matrice des rôles utilisateurs et droits d'accès associés}
+\end{table}
+
+% =============================================================================
+% 3. ARCHITECTURE SYSTÈME & SCHÉMA TIKZ VECTORIEL
+% =============================================================================
+\section{Architecture Système \& Choix Technologiques Structurants}
+
+VIZENTRA adopte une architecture 3-tiers découplée qui garantit l'indépendance de déploiement, la modularité des développements et la défense en profondeur.
+
+\subsection{Schéma Architectural d'Ensemble}
+
+Le schéma vectoriel ci-dessous décrit avec rigueur l'agencement entre les couches Frontend, Backend et Données, ainsi que le pipeline de sécurité transversal :
+
+\vspace{0.4cm}
+\begin{center}
+\includegraphics[width=\textwidth]{/home/mrtds/Documents/WebDev/projet/docs/images/architecture_schema.png}
+\end{center}
+\vspace{0.3cm}
+
+\subsection{Matrice des Flux et Protocoles Inter-Couches}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{2.2cm} p{2.5cm} p{3.2cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Canal / Flux & \color{white}Source & \color{white}Destination & \color{white}Protocole & \color{white}Données Échangées \\
+    \midrule
+    Navigation \& Pages & Navigateur & Front-end SPA & HTTP / Port 3000 & Bundles JS Vite, composants Recharts \\
+    \rowcolor{tablerowalt}
+    Requêtes Métiers & Client Axios & API Express & HTTP/REST / Port 5000 & En-tête \texttt{Bearer <JWT>}, corps JSON \\
+    Pipeline Sécuritaire & Express Core & Middlewares P1 & In-Process Express & Décodage JWT, vérification rôle admin \\
+    \rowcolor{tablerowalt}
+    Persistance Données & Modules Métiers & PostgreSQL 16 & TCP / Port 5435 & Requêtes SQL paramétrées (\$1, \$2), JSONB \\
+    Piste d'Audit & Tous Modules & \texttt{logActivity()} & Appel asynchrone & IP, User-Agent, action, entité, JSONB \\
+    \rowcolor{tablerowalt}
+    Supervision BDD & Administrateur & Adminer GUI & HTTP / Port 8080 & Inspection directe des 8 tables relationnelles \\
+    \bottomrule
+\end{tabularx}
+\caption{Matrice technique des flux réseau et canaux de communication}
+\end{table}
+
+\subsection{Matrice des Choix Technologiques Structurants}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{3.0cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Composant & \color{white}Technologie & \color{white}Bénéfices et Justification Technique \\
+    \midrule
+    Runtime Backend & Node.js 22 LTS & Modèle événementiel asynchrone adapté aux I/O intensives et streaming \\
+    \rowcolor{tablerowalt}
+    Langage Backend & TypeScript ESM & Typage statique strict (\texttt{tsc}), contrats d'interface stricts inter-équipes \\
+    Serveur Web & Express.js 4 & Pipeline modulaire permettant d'intercaler authentification et validation \\
+    \rowcolor{tablerowalt}
+    Base de Données & PostgreSQL 16 & Intégrité relationnelle stricte conjuguée à la puissance du type JSONB \\
+    Framework Frontend & React 18 \& Vite & Composants modulaires, hooks personnalisés, rechargement instantané HMR \\
+    \rowcolor{tablerowalt}
+    Graphiques & Recharts & Bibliothèque déclarative React basée sur SVG, responsive et interactive \\
+    Chiffrement Mots de Passe & bcrypt (10 rounds) & Sel aléatoire unique par compte, fonction de dérivation lente anti-brute-force \\
+    \rowcolor{tablerowalt}
+    Authentification & JWT (HS256) & Jeton signé stateless évitant les surcharges d'appels BDD à chaque requête \\
+    Conteneurisation & Docker Compose & Reproductibilité absolue de l'environnement de base sur tous les postes \\
+    \bottomrule
+\end{tabularx}
+\caption{Synthèse des technologies retenues pour VIZENTRA}
+\end{table}
+
+% =============================================================================
+% 4. MODÉLISATION RELATIONNELLE UNIFIÉE
+% =============================================================================
+\section{Modélisation Conceptuelle \& Schéma Relationnel Unifié (8 Tables)}
+
+La persistance des données repose sur un schéma relationnel hybride garantissant l'intégrité référentielle pour les entités de sécurité et de gestion, tout en exploitant le type \texttt{JSONB} pour stocker des lignes de données aux schémas arbitraires.
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{2.6cm} p{1.2cm} p{2.2cm} p{3.8cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Table & \color{white}Module & \color{white}Clé Primaire & \color{white}Clés Étrangères \& Contraintes & \color{white}Rôle Métier \\
+    \midrule
+    \texttt{users} & P1 & \texttt{id (UUID)} & \texttt{email UNIQUE, CHECK role} & Comptes, rôles RBAC et hash bcrypt \\
+    \rowcolor{tablerowalt}
+    \texttt{activity\_logs} & P1 & \texttt{id (UUID)} & \texttt{user\_id -> users ON DELETE SET NULL} & Piste d'audit, IP, User-Agent, JSONB \\
+    \texttt{datasets} & P2 & \texttt{id (SERIAL)} & \texttt{user\_id -> users ON DELETE CASCADE} & Métadonnées des jeux et schémas colonnes \\
+    \rowcolor{tablerowalt}
+    \texttt{dataset\_rows} & P2 & \texttt{id (BIGSERIAL)} & \texttt{dataset\_id -> datasets CASCADE} & Lignes brutes stockées en objet JSONB \\
+    \texttt{analyses} & P4 & \texttt{id (SERIAL)} & \texttt{owner\_id, dataset\_id FKs} & Configurations requêtes et graphiques \\
+    \rowcolor{tablerowalt}
+    \texttt{analysis\_shares} & P4 & Composite & \texttt{(analysis\_id, user\_id) FKs} & Droits de lecture partagée d'analyses \\
+    \texttt{dashboards} & P4 & \texttt{id (SERIAL)} & \texttt{public\_token UNIQUE, CHECK token} & Tableaux de bord, grille widgets JSONB \\
+    \rowcolor{tablerowalt}
+    \texttt{dashboard\_shares} & P4 & Composite & \texttt{(dashboard\_id, user\_id) FKs} & Droits de consultation de tableaux de bord \\
+    \bottomrule
+\end{tabularx}
+\caption{Dictionnaire unifié des 8 tables de la base PostgreSQL}
+\end{table}
+
+\subsection{Principes Directeurs de Conception BDD}
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{brandblue}{\textbullet}]
+    \item \textbf{Identifiants UUID v4 pour la Sécurité (\texttt{users.id}) :} L'utilisation d'identifiants non séquentiels (\texttt{gen\_random\_uuid()}) interdit toute attaque par énumération directe de ressource (vulnérabilité IDOR).
+    \item \textbf{Flexibilité Maximale avec JSONB (\texttt{dataset\_rows.data}) :} Les jeux de données téléversés peuvent comporter 5 ou 150 colonnes sans nécessiter de refactorisation ou d'altération de schéma DDL PostgreSQL.
+    \item \textbf{Politique de Suppression Différenciée :} Alors que la suppression d'un compte cascade sur ses datasets et dashboards privés, la table d'audit \texttt{activity\_logs} applique \texttt{ON DELETE SET NULL} pour préserver l'historique médico-légal des transactions passées.
+    \item \textbf{Intégrité Stricte de Visibilité Publique :} Une contrainte SQL \texttt{CHECK ((visibility = 'public') = (public\_token IS NOT NULL))} empêche qu'un dashboard privé conserve un lien public actif.
+\end{itemize}
+
+% =============================================================================
+% 5. RÉALISATION P1 (MAMADOU TAHIROU DIALLO)
+% =============================================================================
+\section{Réalisation Détaillée du Module P1 : IAM, Sécurité, Traçabilité \& Administration}
+
+Conçu et réalisé par \textbf{Mamadou Tahirou DIALLO}, le module P1 a été le premier jalon livré à l'équipe. Il constitue la colonne vertébrale sécuritaire sur laquelle reposent les modules P2, P3 et P4.
+
+\subsection{Identification, Cryptographie \& Gestion Stateless des Sessions}
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{Hachage bcrypt (10 rounds) :} À l'inscription (\texttt{POST /api/auth/register}), les mots de passe sont salés et hachés de manière asynchrone. Le mot de passe en clair n'est jamais stocké ni transmis dans les journaux.
+    \item \textbf{Signature de Jetons JWT (HS256) :} À la connexion (\texttt{POST /api/auth/login}), l'authentification réussie génère un jeton signé intégrant l'UUID utilisateur, l'adresse email et le rôle RBAC, avec une durée de validité bornée à 24 heures.
+    \item \textbf{Réponse Uniforme Anti-Énumération :} Le serveur renvoie un code générique \texttt{INVALID\_CREDENTIALS} (HTTP 401) en cas d'email inexistant ou de mot de passe incorrect, empêchant la cartographie des comptes existants.
+\end{itemize}
+
+\subsection{Contrôle d'Accès Basé sur les Rôles (RBAC)}
+P1 met à disposition de l'ensemble de l'équipe deux middlewares fondamentaux :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \texttt{authenticateToken} : Extrait le jeton de l'en-tête \texttt{Authorization: Bearer <token>}, valide la signature cryptographique et injecte le profil vérifié dans \texttt{req.user}.
+    \item \texttt{requireRole('admin')} : Intercepte les accès aux routes privilégiées et rejette immédiatement les analystes avec un code HTTP 403 Forbidden.
+\end{itemize}
+
+\subsection{Piste d'Audit Fail-Safe (\texttt{logActivity})}
+La fonction utilitaire \texttt{logActivity()} consigne les événements critiques (\texttt{USER\_LOGIN}, \texttt{DATASET\_IMPORT}, \texttt{ADMIN\_CHANGE\_ROLE}). Conçue selon le patron Fail-Safe, une anomalie temporaire de journalisation n'interrompt en aucun cas l'action métier de l'utilisateur.
+
+\subsection{Console de Supervision \& Administration}
+Exclusivement accessible aux administrateurs, la console P1 propose :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{Tableau de bord KPIs :} Métriques d'utilisateurs totaux, utilisateurs actifs, ventilation des rôles et volume d'événements 24h.
+    \item \textbf{Gouvernance des Comptes :} Recherche textuelle, promotion/rétrogradation de rôle instantanée et interrupteur de suspension de compte.
+    \item \textbf{Journal d'Audit Centralisé :} Tableau paginé et filtrable de l'ensemble des transactions de la plateforme avec inspection des métadonnées JSONB.
+\end{itemize}
+
+% =============================================================================
+% 6. RÉALISATION P2 (HASSAN BENLMOUDEN)
+% =============================================================================
+\section{Réalisation Détaillée du Module P2 : Ingestion, Datasets \& Exploration Interactive}
+
+Développé par \textbf{Hassan BENLMOUDEN}, le module P2 constitue le point d'entrée des données d'entreprise dans VIZENTRA.
+
+\subsection{Moteur d'Ingestion Multi-Formats \& Inférence de Types}
+Le service prend en charge des fichiers CSV et JSON jusqu'à 15 Mo et 100 000 lignes. Un analyseur heuristique détecte automatiquement les délimiteurs usuels (virgule, point-virgule, tabulation). Dès la lecture des premières lignes, un algorithme déduit les types des colonnes (\texttt{number}, \texttt{date}, \texttt{text}) et stocke la structure inférée dans \texttt{datasets.columns}.
+
+\subsection{Profilage Automatique \& Score de Qualité (Fonctionnalité Avancée)}
+À chaque importation, P2 évalue la complétude du jeu de données :
+\begin{equation}
+    \text{Score de Qualité (\%)} = 100 \times \frac{\text{Cellules Totales} - \text{Cellules Vides}}{\text{Cellules Totales}}
+\end{equation}
+Les cellules non renseignées sont normalisées en \texttt{NULL} SQL, offrant au Data Analyst un indice de confiance immédiat sur la santé du dataset.
+
+\subsection{Exploration Tabulaire Haute Performance}
+L'interface React P2 implémente une pagination côté serveur avec support complet des tris et des opérateurs de filtrage (\texttt{eq}, \texttt{contains}, \texttt{gt}, \texttt{lt}, \texttt{isnull}). Tous les paramètres sont injectés via requêtes SQL préparées pour prévenir toute injection.
+
+% =============================================================================
+% 7. RÉALISATION P3 (HAFSA BENABOU)
+% =============================================================================
+\section{Réalisation Détaillée du Module P3 : Moteur Analytique, Agrégation \& Visualisations}
+
+Conçu par \textbf{Hafsa BENABOU}, le module P3 transforme les lignes de données brutes stockées par P2 en indicateurs statistiques et graphiques interactifs.
+
+\subsection{Constructeur de Requêtes SQL Analytiques Dynamiques}
+L'API \texttt{POST /api/analytics/query} génère dynamiquement des requêtes d'agrégation performantes :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{Fonctions Statistiques :} Sommes (\texttt{sum}), moyennes (\texttt{avg}), minima/maxima (\texttt{min}/\texttt{max}), effectifs (\texttt{count}) et médianes.
+    \item \textbf{Découpage Chronologique (\textit{Time-Bucketing}) :} Agrégation temporelle via \texttt{date\_trunc} selon 5 niveaux de granularité (jour, semaine, mois, trimestre, année).
+    \item \textbf{Classement \& Part de Marché :} Calcul dynamique du rang et de la quote-part relative en pourcentage (\texttt{share\_pct}).
+\end{itemize}
+
+\subsection{Composants Graphiques Déclaratifs (Recharts)}
+P3 a réalisé une bibliothèque de visualisation moderne intégrant infobulles, animations et adaptabilité responsive : diagrammes en barres (\texttt{BarChart}), courbes chronologiques (\texttt{LineChart}), diagrammes circulaires (\texttt{PieChart}), histogrammes et cartes KPI (\texttt{KpiCard}).
+
+% =============================================================================
+% 8. RÉALISATION P4 (MOUSTAPHA COMPAORE)
+% =============================================================================
+\section{Réalisation Détaillée du Module P4 : Dashboards Multi-Widgets, Outliers \& Partage Public}
+
+Développé par \textbf{Moustapha COMPAORE}, le module P4 assure la restitution des indicateurs, leur mise en page modulaire et leur diffusion sécurisée.
+
+\subsection{Éditeur de Tableaux de Bord Dynamique}
+L'éditeur permet d'assembler jusqu'à 24 widgets par tableau de bord. La structure est sauvegardée en JSONB dans \texttt{dashboards.layout}. Une barre de filtres globaux transversaux applique simultanément et en temps réel des restrictions (catégories, dates, montants) sur tous les widgets du tableau.
+
+\subsection{Détection Statistique des Valeurs Aberrantes (Outliers)}
+P4 implémente trois algorithmes de référence pour identifier les anomalies numériques :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{Écart Interquartile (IQR) :} Détecte les valeurs situées hors de $[Q_1 - 1.5\times\text{IQR}, Q_3 + 1.5\times\text{IQR}]$.
+    \item \textbf{Z-Score Paramétrable :} Mesure la déviation en nombre d'écarts-types par rapport à la moyenne.
+    \item \textbf{Médiane des Écarts Absolus (MAD) :} Méthode robuste insensible aux distributions asymétriques.
+\end{itemize}
+Le composant \texttt{OutlierView} surligne les observations suspectes avec justification statistique.
+
+\subsection{Partage Sécurisé \& Liens Publics Révocables}
+Outre le partage nominatif entre analystes, P4 génère des URL publiques anonymisées (\texttt{/public/dashboards/:token}) protégées par jetons aléatoires de 64 caractères et soumises à un rate-limiting strict (60 requêtes/minute).
+
+% =============================================================================
+% 9. STRATÉGIE DE CYBERSÉCURITÉ (OWASP TOP 10)
+% =============================================================================
+\section{Stratégie de Cybersécurité \& Défense en Profondeur (Conformité OWASP)}
+
+La plateforme VIZENTRA a fait l'objet d'un audit systématique au regard des risques majeurs du Top 10 OWASP :
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{2.8cm} p{3.2cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Risque OWASP & \color{white}Vulnérabilité Évitée & \color{white}Contre-Mesures Implémentées dans VIZENTRA \\
+    \midrule
+    A01 : Broken Access & Élévation de privilèges & RBAC strict vérifié côté serveur par \texttt{requireRole('admin')}. Réponses 404 pour masquer l'existence de ressources privées \\
+    \rowcolor{tablerowalt}
+    A02 : Crypto Failures & Fuite de mots de passe & Hachage bcrypt 10 rounds avec sel unique. Signature JWT HS256 clé 32+ caractères \\
+    A03 : SQL Injection & Injection de commandes SQL & 100\% des requêtes SQL utilisent des paramètres préparés (\$1, \$2) via \texttt{pg.Pool} \\
+    \rowcolor{tablerowalt}
+    A04 : IDOR & Énumération d'utilisateurs & UUID v4 non prédictibles (\texttt{users.id}) et tokens 64 caractères aléatoires \\
+    A05 : Misconfiguration & Fuite d'informations internes & CORS multi-origines stricts, masquage complet des traces d'erreurs en production \\
+    \rowcolor{tablerowalt}
+    A07 : Auth Failures & Attaques par force brute & Messages génériques \texttt{INVALID\_CREDENTIALS}, rate limiting sur l'authentification \\
+    A09 : Security Logging & Défaut de traçabilité & Journal \texttt{activity\_logs} infalsifiable avec IP, User-Agent, horodatage UTC et JSONB \\
+    \bottomrule
+\end{tabularx}
+\caption{Matrice de conformité aux standards de sécurité OWASP}
+\end{table}
+
+% =============================================================================
+% 10. RECETTE, TESTS & VALIDATION EXPÉRIMENTALE
+% =============================================================================
+\section{Recette Conjointe, Banc de Tests Automatisés \& Validation Expérimentale}
+
+L'assurance qualité a été vérifiée à travers trois niveaux d'évaluation technique :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{brandblue}{\textbullet}]
+    \item \textbf{Banc de Tests Unitaires P4 (20/20 Réussis) :} Validation automatisée des algorithmes IQR, Z-score, MAD, des requêtes temporelles, des filtres et de la compatibilité UUID avec le socle P1.
+    \item \textbf{Vérification Statique TypeScript (\texttt{tsc --noEmit}) :} 0 erreur de typage détectée sur l'ensemble du backend et des interfaces partagées.
+    \item \textbf{Compilation de Production Frontend (\texttt{vite build}) :} Bundle optimisé compilé en 1.01 seconde sans avertissement critique.
+    \item \textbf{Validation sur Données Réelles :} Ingestion et restitution validées sur le fichier \texttt{ventes\_demo\_t1\_2026.csv} (204 lignes, anomalies à 9800 € détectées avec succès par IQR) et \texttt{agences\_satisfaction\_2026.csv} (cellules vides détectées et quantifiées par P2).
+\end{itemize}
+
+% =============================================================================
+% 11. GUIDE OPÉRATIONNEL DE DÉPLOIEMENT
+% =============================================================================
+\section{Guide Opérationnel de Déploiement \& Procédure de Lancement}
+
+Le démarrage de l'infrastructure complète s'effectue en trois commandes standardisées :
+\begin{enumerate}[leftmargin=1.5cm, label=\textbf{\color{brandblue}Étape \arabic* :}]
+    \item \textbf{Démarrage de la Base de Données :} \texttt{docker compose up -d} (PostgreSQL 16 sur port 5435, Adminer sur port 8080).
+    \item \textbf{Schéma BDD \& Seeding :} \texttt{cd backend \&\& npm run db:init \&\& npm run db:seed}.
+    \item \textbf{Lancement des Serveurs Web :} Dans un terminal : \texttt{cd backend \&\& npm run dev} (port 5000). Dans un second terminal : \texttt{cd frontend \&\& npm run dev} (port 3000).
+\end{enumerate}
+
+\subsection{Comptes de Démonstration Pré-configurés}
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.8cm} p{2.8cm} p{2.0cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Identifiant Email & \color{white}Mot de Passe & \color{white}Rôle & \color{white}Périmètre d'Accès \\
+    \midrule
+    \texttt{alice@example.com} & \texttt{Password123!} & \texttt{admin} & Accès complet : Datasets, Analyses, Dashboards, Console Admin (/admin) \\
+    \rowcolor{tablerowalt}
+    \texttt{bob@example.com} & \texttt{Password123!} & \texttt{analyst} & Data Analyst : Datasets, Analyses, Dashboards (accès /admin bloqué en 403) \\
+    \texttt{admin@example.com} & \texttt{Password123!} & \texttt{admin} & Administrateur système dédié aux opérations de supervision \\
+    \bottomrule
+\end{tabularx}
+\caption{Comptes de test intégrés dans le jeu de données de démo}
+\end{table}
+
+% =============================================================================
+% 12. SCÉNARIO DE SOUTENANCE ORALE
+% =============================================================================
+\section{Scénario Intégré de Démonstration pour la Soutenance Orale}
+
+Pour la soutenance officielle devant le jury le 26 octobre 2026, l'équipe a répété un scénario continu sans rupture d'une durée de 15 minutes :
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{techblue}{\textbullet}]
+    \item \textbf{Minute 0 à 3 — Introduction \& Socle P1 (Mamadou Tahirou DIALLO) :} Présentation générale de l'architecture, démonstration de la connexion avec émission du token JWT, et rappel des choix de sécurité (bcrypt, UUIDs, RBAC).
+    \item \textbf{Minute 3 à 6 — Ingestion \& Exploration P2 (Hassan BENLMOUDEN) :} Téléversement d'un fichier CSV en direct, démonstration de la détection de types, explication du score de qualité et filtrage dans la table paginée.
+    \item \textbf{Minute 6 à 9 — Moteur Analytique \& Graphes P3 (Hafsa BENABOU) :} Sélection du dataset, calcul d'une moyenne et d'une série temporelle mensuelle, génération d'un histogramme interactif et sauvegarde de l'analyse.
+    \item \textbf{Minute 9 à 12 — Tableaux de Bord \& Partage P4 (Moustapha COMPAORE) :} Assemblage de l'analyse dans un dashboard multi-widgets, activation de la détection d'outliers, filtrage global par région, et génération d'un lien public.
+    \item \textbf{Minute 12 à 15 — Contrôle RBAC \& Audit P1 (Mamadou Tahirou DIALLO) :} Tentative d'accès à \texttt{/admin} avec un compte analyste (démonstration du rejet 403), connexion en admin, promotion du compte en direct, et affichage dans les logs d'audit de la traçabilité immédiate de chaque étape.
+\end{itemize}
+
+% =============================================================================
+% 13. BILAN COLLECTIF & PERSPECTIVES
+% =============================================================================
+\section{Bilan Collectif, Analyse Critique \& Perspectives d'Évolution}
+
+Le projet VIZENTRA a atteint 100\% des exigences fonctionnelles et sécuritaires. La collaboration a démontré la maturité de l'équipe dans l'application des bonnes pratiques de développement logiciel moderne (contrats d'interfaces, typage statique, contrôle de version Git, défense en profondeur).
+
+\subsection{Perspectives d'Évolution Future}
+\begin{itemize}[leftmargin=1.5cm, label=\textcolor{brandblue}{\textbullet}]
+    \item \textbf{Streaming Ingestion :} Traitement en flux continu (Node.js Streams / Workers) pour supporter des fichiers de plus de 500 Mo sans saturation mémoire.
+    \item \textbf{Authentification Multi-Facteurs (2FA / TOTP) :} Sécurisation renforcée des profils administrateurs via application mobile d'authentification.
+    \item \textbf{Export de Rapports PDF Haute Définition :} Génération automatisée côté serveur de synthèses PDF prêtes à imprimer.
+    \item \textbf{Modèles Prédictifs Machine Learning :} Intégration d'algorithmes simples de prévision temporelle (ARIMA, régression linéaire).
+\end{itemize}
+
+% =============================================================================
+% ANNEXES
+% =============================================================================
+\appendix
+\section{Catalogue Complet des Endpoints de l'API REST}
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{1.4cm} p{4.2cm} p{1.2cm} p{2.8cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Méthode & \color{white}Endpoint URL & \color{white}Module & \color{white}Protection & \color{white}Description Fonctionnelle \\
+    \midrule
+    \texttt{POST} & \texttt{/api/auth/register} & P1 & Public & Création de compte avec hachage bcrypt \\
+    \rowcolor{tablerowalt}
+    \texttt{POST} & \texttt{/api/auth/login} & P1 & Public (Rate-limited) & Vérification identifiants et émission JWT 24h \\
+    \texttt{GET} & \texttt{/api/auth/me} & P1 & Bearer JWT & Profil de l'utilisateur connecté \\
+    \rowcolor{tablerowalt}
+    \texttt{GET} & \texttt{/api/admin/users} & P1 & Admin only & Annuaire paginé des utilisateurs \\
+    \texttt{PATCH} & \texttt{/api/admin/users/:id/role} & P1 & Admin only & Promotion / Rétrogradation de rôle \\
+    \rowcolor{tablerowalt}
+    \texttt{PATCH} & \texttt{/api/admin/users/:id/status} & P1 & Admin only & Suspension / Réactivation de compte \\
+    \texttt{GET} & \texttt{/api/admin/stats} & P1 & Admin only & KPIs globaux de la plateforme \\
+    \rowcolor{tablerowalt}
+    \texttt{GET} & \texttt{/api/admin/logs} & P1 & Admin only & Piste d'audit de sécurité filtrable \\
+    \texttt{GET} & \texttt{/api/datasets} & P2 & Bearer JWT & Liste des datasets de l'utilisateur \\
+    \rowcolor{tablerowalt}
+    \texttt{POST} & \texttt{/api/datasets/import} & P2 & Bearer JWT & Téléversement et ingestion CSV/JSON \\
+    \texttt{GET} & \texttt{/api/datasets/:id/profile} & P2 & Bearer JWT & Rapport de qualité et types inférés \\
+    \rowcolor{tablerowalt}
+    \texttt{GET} & \texttt{/api/datasets/:id/rows} & P2 & Bearer JWT & Lignes paginées avec filtres et tris \\
+    \texttt{POST} & \texttt{/api/analytics/query} & P3 & Bearer JWT & Agrégation SQL multi-dimensions \\
+    \rowcolor{tablerowalt}
+    \texttt{GET} & \texttt{/api/dashboards} & P4 & Bearer JWT & Liste des tableaux de bord accessibles \\
+    \texttt{POST} & \texttt{/api/dashboards} & P4 & Bearer JWT & Création d'un dashboard modulaire \\
+    \rowcolor{tablerowalt}
+    \texttt{POST} & \texttt{/api/dashboards/:id/render} & P4 & Bearer JWT & Rendu des widgets avec filtres globaux \\
+    \texttt{GET} & \texttt{/api/public/dashboards/:token} & P4 & Public (Rate-limited) & Consultation anonyme via jeton 64 car. \\
+    \bottomrule
+\end{tabularx}
+\caption{Catalogue officiel des 17 endpoints de la plateforme VIZENTRA}
+\end{table}
+
+\section{Cartographie des Répertoires du Projet \& Matrice RACI}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{4.8cm} p{2.2cm} X}
+    \toprule
+    \rowcolor{tableheader}
+    \color{white}Dossier / Module & \color{white}Responsable & \color{white}Contenu \& Rôle Architectural \\
+    \midrule
+    \texttt{backend/src/modules/auth/} & P1 & Contrôleurs et services d'authentification JWT \\
+    \rowcolor{tablerowalt}
+    \texttt{backend/src/middlewares/} & P1 & Middlewares \texttt{authenticateToken}, \texttt{requireRole} \\
+    \texttt{backend/src/modules/admin/} & P1 & Console administrateur, KPIs et service \texttt{logActivity()} \\
+    \rowcolor{tablerowalt}
+    \texttt{backend/src/modules/datasets/} & P2 & Analyseur de types, logique d'ingestion CSV/JSON \\
+    \texttt{backend/src/modules/analytics/} & P3 & Constructeur de requêtes SQL analytiques \\
+    \rowcolor{tablerowalt}
+    \texttt{backend/src/modules/dashboards/} & P4 & Moteur de dashboards, filtres globaux et outliers \\
+    \texttt{frontend/src/features/auth/} & P1 & Formulaires de connexion, inscription et profil \\
+    \rowcolor{tablerowalt}
+    \texttt{frontend/src/features/admin/} & P1 & Console de supervision et explorateur d'audit \\
+    \texttt{frontend/src/features/datasets/} & P2 & Écran d'importation, profilage et table d'exploration \\
+    \rowcolor{tablerowalt}
+    \texttt{frontend/src/features/analytics/} & P3 & Constructeur d'analyses et composants Recharts \\
+    \texttt{frontend/src/features/dashboards/} & P4 & Éditeur modulaire drag-and-drop et vue publique \\
+    \bottomrule
+\end{tabularx}
+\caption{Cartographie modulaire du référentiel VIZENTRA}
+\end{table}
+
+\end{document}

@@ -31,6 +31,10 @@ Thumbs.db
 # Logs & temp files
 logs/
 *.log
+*.aux
+*.toc
+*.out
+*.synctex.gz
 tmp/
 temp/
 coverage/
