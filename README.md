@@ -404,55 +404,74 @@ NODE_ENV=development
 
 ---
 
-## ⚡ 8. Démarrage Rapide & Comptes de Test (Intégration Réalisée)
+## ⚡ 8. Démarrage rapide et comptes de démonstration
 
-L'intégration conjointe de **P1 (Auth & Admin)** et **P4 (Dashboards & Partage)** est opérationnelle.
+Prérequis : Node.js 22.9 ou plus récent et PostgreSQL 16 (Docker Compose est configuré sur le port 5435).
 
-### 1. Démarrer la Base de Données & l'Adminer
-```bash
+### Base de données
+
+```powershell
 docker compose up -d
-```
-- PostgreSQL écoute sur `localhost:5435`.
-- Interface graphique Adminer accessible sur `http://localhost:8080`.
-
-### 2. Démarrer le Backend (Node.js / Express / TypeScript)
-```bash
 cd backend
 npm install
+npm run db:seed
+```
+
+Le seed applique les schémas P1/P2/P4 et ajoute les comptes et jeux de démonstration. La commande est relançable. PostgreSQL écoute sur `localhost:5435`; Adminer est disponible sur `http://localhost:8080`.
+
+### Backend
+
+Dans `backend/.env`, vérifier `DATABASE_URL` et `CLIENT_URL=http://localhost:3000`, puis lancer :
+
+```powershell
 npm run dev
 ```
-- API active sur `http://localhost:5000` (Routes Auth, Admin, Analyses, Dashboards).
-- Vérification statique : `npm run typecheck` (0 erreur).
-- Tests automatisés : `npm run test:dashboards` (20/20 pass).
 
-### 3. Démarrer le Frontend (React / Vite)
-```bash
+L’API écoute sur `http://localhost:5000`. Contrôles disponibles depuis `backend/` : `npm run typecheck` et `npm run test:dashboards`.
+
+### Frontend
+
+Dans un autre terminal :
+
+```powershell
 cd frontend
 npm install
+npm run build
 npm run dev
 ```
-- Interface accessible sur `http://localhost:3000`.
 
-### 🔑 Comptes de démonstration pré-configurés
-| Email | Mot de passe | Rôle | Privilèges & Accès |
-|---|---|---|---|
-| `alice@example.com` | `Password123!` | `admin` | Accès complet : Profil, Analyses, Dashboards, Console Admin (`/admin`) |
-| `bob@example.com` | `Password123!` | `analyst` | Data Analyst : Profil, Analyses, Dashboards (accès `/admin` interdit en 403) |
+Ouvrir `http://localhost:3000` pour conserver la même origine que `CLIENT_URL`.
 
----
+### Comptes de démonstration
 
-## 📄 9. Livrables & Rapports Word (.docx) Disponibles
+| Email | Mot de passe | Rôle |
+|---|---|---|
+| `alice@example.com` | `Password123!` | `analyst` — propriétaire des datasets de démonstration |
+| `bob@example.com` | `Password123!` | `analyst` |
+| `admin@example.com` | `Password123!` | `admin` |
 
-Dans le dossier `docs/` se trouvent tous les livrables exigés pour la soutenance du 26 octobre 2026 :
-- [`docs/rapport-p1.docx`](docs/rapport-p1.docx) : **Rapport officiel individuel de P1** (Périmètre, architecture BDD/Backend/Frontend, mesures de cybersécurité, plan de soutenance).
-- [`docs/rapport-fusion-p1-p4.docx`](docs/rapport-fusion-p1-p4.docx) : **Rapport officiel conjoint P1 & P4** (Intégration globale, modèle relationnel à 8 tables, moteur de détection d'outliers, dashboarding).
-- [`docs/architecture-p1.md`](docs/architecture-p1.md) : Spécification technique détaillée de sécurité et d'architecture.
-- [`docs/soutenance-p1.md`](docs/soutenance-p1.md) : Fiche mémo pour la soutenance orale (scénario de démo et réponses aux questions du jury).
+Les datasets seedés sont « Ventes 2026 (démo) » (204 lignes) et « Qualité des données (démo) » (12 lignes, valeurs manquantes).
 
 ---
 
-## 🤝 10. Procédure pour l'équipe (P2, P3)
+## 📄 9. Rapports et documentation
 
-1. Pour toute question sur l'intégration du token ou des autorisations, référez-vous à la section **3. Outils transverses livrés**.
-2. N'essayez pas de contourner `authenticateToken` en codant votre propre système de vérification d'utilisateur.
-3. Si votre fonctionnalité nécessite une permission spéciale ou une nouvelle action dans `activity_logs`, contactez **P1** pour la déclarer proprement dans les constantes de sécurité.
+- [`docs/rapport-p1.docx`](docs/rapport-p1.docx) : rapport individuel P1.
+- [`docs/rapport-p2.docx`](docs/rapport-p2.docx) et [`docs/rapport-p2.md`](docs/rapport-p2.md) : rapport P2, import, exploration, profilage et qualité.
+- [`docs/rapport-p4.docx`](docs/rapport-p4.docx) : rapport individuel P4.
+- [`docs/rapport-fusion-p1-p4.docx`](docs/rapport-fusion-p1-p4.docx) : rapport conjoint historique P1/P4.
+- [`docs/rapport-fusion-p1-p2-p4.docx`](docs/rapport-fusion-p1-p2-p4.docx) et [`docs/rapport-fusion-p1-p2-p4.md`](docs/rapport-fusion-p1-p2-p4.md) : synthèse de l’intégration P1/P2/P4.
+- [`docs/architecture-p1.md`](docs/architecture-p1.md), [`docs/architecture-p2.md`](docs/architecture-p2.md) et [`docs/architecture-p4.md`](docs/architecture-p4.md) : détails techniques par module.
+- [`docs/soutenance-p1.md`](docs/soutenance-p1.md), [`docs/soutenance-p2.md`](docs/soutenance-p2.md) et [`docs/soutenance-p4.md`](docs/soutenance-p4.md) : fiches de démonstration et questions possibles.
+- Collection Postman P2 : [`postman/collections/datasets.postman_collection.json`](postman/collections/datasets.postman_collection.json).
+
+Les rapports Word P2 et fusion sont générés à partir de leurs sources Markdown avec `python docs/build_reports.py`.
+
+---
+
+## 🤝 10. Intégration entre les modules
+
+- P1 fournit `authenticateToken`, `requireRole()`, `logActivity()` et le client Axios partagé. Les pages P2/P4 les réutilisent.
+- P2 conserve les lignes dans `dataset_rows.data` (JSONB) ; P3 peut donc les lire directement pour les analyses.
+- P4 s’appuie sur `datasets.id`, `datasets.user_id`, `datasets.title` et `dataset_rows.data`. Garder ces noms et types maintient la compatibilité.
+- Les collections Postman des modules sont rangées dans `postman/collections/`; `node postman/merge-collections.js` les fusionne.

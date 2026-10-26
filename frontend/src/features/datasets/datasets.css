@@ -1,0 +1,131 @@
+.datasets-page { max-width: 1280px; }
+.dataset-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem; margin:1rem 0 1.75rem; }
+.dataset-heading h1 { font-size:2rem; line-height:1.2; margin:.2rem 0 .4rem; }
+.dataset-heading p { color:var(--text-muted); }
+.dataset-eyebrow { color:var(--primary)!important; font-size:.72rem; font-weight:700; letter-spacing:.11em; }
+.dataset-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.25rem; color:var(--text-muted); font-size:.85rem; }
+.dataset-toolbar input,.table-tools input,.filter-controls input,.filter-controls select,.import-form input,.import-form textarea { width:100%; border:1px solid var(--border); border-radius:var(--radius); padding:.7rem .8rem; color:var(--text-main); background:var(--surface); font:inherit; }
+.dataset-toolbar input { max-width:460px; }
+.dataset-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+.dataset-card { padding:1.25rem; display:flex; flex-direction:column; min-height:270px; }
+.dataset-card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:.9rem; }
+.dataset-icon { width:38px; height:38px; border-radius:10px; display:grid; place-items:center; color:var(--primary); background:var(--primary-light); font-size:1.3rem; }
+.dataset-card h2 { font-size:1.08rem; margin-bottom:.3rem; }
+.dataset-description { color:var(--text-muted); font-size:.86rem; min-height:2.6rem; }
+.dataset-tags { display:flex; flex-wrap:wrap; gap:.4rem; margin:.85rem 0; }
+.dataset-tags span { background:#f1f5f9; color:#475569; border-radius:99px; padding:.22rem .55rem; font-size:.72rem; }
+.dataset-quality { margin-top:auto; padding:.65rem 0; }
+.dataset-quality>div:first-child { display:flex; justify-content:space-between; color:var(--text-muted); font-size:.75rem; margin-bottom:.35rem; }
+.dataset-quality strong { color:var(--text-main); }
+.quality-track { height:6px; background:#e2e8f0; border-radius:99px; overflow:hidden; }
+.quality-track i { display:block; height:100%; background:#16a34a; border-radius:99px; }
+.dataset-card-actions { display:flex; gap:.5rem; margin-top:.7rem; }
+.dataset-empty { text-align:center; padding:3rem 1rem; }
+.dataset-empty p { color:var(--text-muted); margin:.45rem 0 1.25rem; }
+.import-page { max-width:850px; }
+.dataset-back { display:inline-block; margin:.2rem 0 .7rem; color:var(--text-muted); font-size:.88rem; }
+.import-form { display:grid; gap:1rem; padding:1.5rem; }
+.import-form>label,.import-fields label { display:grid; gap:.4rem; font-size:.86rem; font-weight:600; }
+.import-form em { color:var(--danger); font-style:normal; }
+.import-form textarea { resize:vertical; }
+.import-fields { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.file-drop { position:relative; min-height:150px; display:flex!important; flex-direction:column; align-items:center; justify-content:center; gap:.35rem!important; border:1px dashed #94a3b8; border-radius:var(--radius); background:#f8fafc; cursor:pointer; color:var(--text-main); }
+.file-drop>span:last-of-type { color:var(--text-muted); font-size:.78rem; font-weight:400; }
+.file-drop input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.file-symbol { font-size:1.6rem; color:var(--primary); }
+.import-actions { display:flex; justify-content:flex-end; gap:.6rem; margin-top:.4rem; }
+.explorer-page { max-width:1500px; }
+.explorer-heading { align-items:center; }
+.explorer-heading .badge { margin-bottom:.3rem; }
+.explorer-actions { display:flex; align-items:center; gap:.6rem; }
+.metadata-edit { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin:-.7rem 0 1rem; padding:1rem; }
+.metadata-edit label { display:grid; gap:.3rem; font-size:.8rem; font-weight:600; }
+.metadata-edit input,.metadata-edit textarea { width:100%; border:1px solid var(--border); border-radius:var(--radius); padding:.6rem .7rem; font:inherit; }
+.metadata-edit button { justify-self:end; }
+.profile-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin-bottom:1rem; }
+.profile-strip>div { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:.85rem 1rem; display:flex; flex-direction:column; gap:.2rem; }
+.profile-strip span { color:var(--text-muted); font-size:.76rem; }
+.profile-strip strong { font-size:1.25rem; }
+.profile-strip small { font-size:.75rem; color:var(--text-muted); font-weight:500; }
+.profile-score strong { color:#15803d; }
+.explorer-grid { display:grid; grid-template-columns:minmax(0,1fr) 285px; gap:1rem; align-items:start; }
+.data-table-card { padding:1rem; }
+.table-tools { display:grid; gap:.65rem; margin-bottom:.8rem; }
+.filter-controls { display:flex; gap:.5rem; }
+.filter-controls select { max-width:200px; }
+.filter-controls .btn { white-space:nowrap; }
+.explorer-table { min-width:700px; }
+.explorer-table th { padding:.35rem .65rem; }
+.explorer-table th button { display:flex; align-items:center; gap:.4rem; border:0; background:none; color:inherit; font:inherit; cursor:pointer; white-space:nowrap; }
+.explorer-table th small { font-size:.63rem; font-weight:400; color:#94a3b8; }
+.explorer-table td { padding:.65rem; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pagination { display:flex; justify-content:space-between; align-items:center; gap:.7rem; padding-top:.85rem; color:var(--text-muted); font-size:.8rem; }
+.pagination>div { display:flex; align-items:center; gap:.5rem; }
+.profile-panel { padding:1.1rem; }
+.profile-panel h2 { font-size:1rem; }
+.profile-hint { color:var(--text-muted); font-size:.78rem; margin:.25rem 0 .8rem; }
+.column-profile { border-top:1px solid var(--border); padding:.7rem 0; display:grid; gap:.35rem; }
+.column-profile>div { display:flex; justify-content:space-between; align-items:center; gap:.3rem; font-size:.84rem; }
+.column-profile .badge { font-size:.58rem; padding:.12rem .45rem; }
+.column-profile small { color:var(--text-muted); font-size:.72rem; }
+@media (max-width:950px) { .explorer-grid { grid-template-columns:1fr; } .profile-strip { grid-template-columns:repeat(2,1fr); } .profile-panel { display:grid; grid-template-columns:repeat(2,1fr); gap:0 .8rem; } .profile-panel h2,.profile-hint { grid-column:1/-1; } }
+@media (max-width:620px) { .dataset-heading { align-items:flex-start; flex-direction:column; } .dataset-heading h1 { font-size:1.65rem; } .import-fields,.metadata-edit { grid-template-columns:1fr; } .filter-controls { flex-wrap:wrap; } .filter-controls select { max-width:none; } .filter-controls input { min-width:120px; } .pagination { align-items:flex-start; flex-direction:column; } .profile-panel { display:block; } }
+
+/* ==================================================================
+   Intégration visuelle VIZENTRA (espace de travail AppShell) : jetons de
+   marque, typographie, cartes, boutons et formulaires. Styles ajoutés
+   uniquement, limités à .vz-shell : la logique des pages P2 est inchangée.
+   ================================================================== */
+.vz-shell .datasets-page { --primary: var(--vz-blue); --primary-hover: var(--vz-blue-hover); --primary-light: #eff6ff; --radius: 10px; color-scheme: light; }
+.vz-shell .datasets-page .dataset-heading { margin: 0 0 1.5rem; }
+.vz-shell .datasets-page .dataset-heading h1 { font-family: var(--vz-font-display); font-weight: 750; font-size: clamp(1.35rem, 1.6vw, 1.65rem); letter-spacing: -0.01em; margin: 0.15rem 0 0.2rem; }
+.vz-shell .datasets-page .dataset-heading p { margin: 0; }
+.vz-shell .datasets-page .dataset-eyebrow { color: var(--vz-blue) !important; text-transform: uppercase; }
+.vz-shell .datasets-page .dataset-back { margin: 0 0 0.6rem; color: var(--vz-slate); font-weight: 500; }
+.vz-shell .datasets-page .dataset-back:hover { color: var(--vz-blue); }
+
+/* Boutons : mêmes conventions que les pages P3 / P4 (dégradé bleu-violet) */
+.vz-shell .datasets-page .btn { border-radius: 9px; font-weight: 600; transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; }
+.vz-shell .datasets-page .btn-primary { background: linear-gradient(135deg, var(--vz-blue) 0%, #4f46e5 100%); border-color: transparent; color: #fff; box-shadow: 0 6px 16px -10px rgba(37, 99, 235, 0.8); }
+.vz-shell .datasets-page .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -10px rgba(37, 99, 235, 0.85); }
+.vz-shell .datasets-page .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+.vz-shell .datasets-page .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.vz-shell .datasets-page .btn:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+
+/* Cartes et champs */
+.vz-shell .datasets-page .card { border-radius: 14px; border-color: var(--vz-line); box-shadow: var(--vz-shadow-card); }
+.vz-shell .datasets-page input,
+.vz-shell .datasets-page select,
+.vz-shell .datasets-page textarea { border-radius: 10px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.vz-shell .datasets-page input:focus,
+.vz-shell .datasets-page select:focus,
+.vz-shell .datasets-page textarea:focus { outline: none; border-color: var(--vz-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+.vz-shell .datasets-page .alert { border-radius: 10px; }
+
+/* Liste des datasets */
+.vz-shell .dataset-card { transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease; }
+.vz-shell .dataset-card:hover { transform: translateY(-2px); border-color: #bfdbfe; box-shadow: var(--vz-shadow-lift); }
+.vz-shell .dataset-card h2 { font-family: var(--vz-font-display); font-weight: 700; }
+.vz-shell .dataset-icon { border-radius: 12px; color: #fff; background: linear-gradient(135deg, #2563eb, #7c3aed); box-shadow: 0 8px 20px -10px rgba(37, 99, 235, 0.7); }
+.vz-shell .dataset-tags span { background: #f1f5f9; color: var(--vz-slate-ink); }
+.vz-shell .dataset-empty { border-style: dashed; border-color: #cbd5e1; box-shadow: none; }
+.vz-shell .dataset-empty h2 { font-family: var(--vz-font-display); font-size: 1.1rem; }
+
+/* Import */
+.vz-shell .vz-content > .import-page { max-width: 920px; }
+.vz-shell .file-drop { border-color: #cbd5e1; border-radius: 14px; transition: border-color 0.15s ease, background-color 0.15s ease; }
+.vz-shell .file-drop:hover,
+.vz-shell .file-drop:focus-within { border-color: var(--vz-blue); background: #eff6ff; }
+.vz-shell .file-symbol { color: var(--vz-blue); }
+
+/* Exploration */
+.vz-shell .profile-strip > div { border-radius: 14px; border-color: var(--vz-line); box-shadow: var(--vz-shadow-card); }
+.vz-shell .profile-strip strong { font-family: var(--vz-font-display); font-weight: 750; }
+.vz-shell .data-table-card .table-container { border-radius: 10px; }
+.vz-shell .explorer-table th { background: #f8fafc; }
+.vz-shell .explorer-table th button:hover { color: var(--vz-blue); }
+.vz-shell .explorer-table tbody tr:hover td { background: #f8fafc; }
+.vz-shell .profile-panel h2 { font-family: var(--vz-font-display); font-weight: 700; }
+/* Une colonne sous 950 px : minmax(0, 1fr) laisse le tableau (min 700 px) défiler dans
+   son conteneur au lieu d'élargir toute la page sur mobile. */
+@media (max-width:950px) { .vz-shell .explorer-grid { grid-template-columns: minmax(0, 1fr); } }

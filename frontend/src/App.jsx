@@ -12,6 +12,11 @@ import { RegisterPage } from './features/auth/RegisterPage';
 import { ProfilePage } from './features/auth/ProfilePage';
 import { AdminDashboardPage } from './features/admin/AdminDashboardPage';
 
+// P2 Pages (Import & Exploration des datasets)
+import DatasetsPage from './features/datasets/DatasetsPage';
+import ImportDatasetPage from './features/datasets/ImportDatasetPage';
+import DatasetExplorePage from './features/datasets/DatasetExplorePage';
+
 // P4 Pages (Dashboards & Partage)
 import {
   DashboardsListPage,
@@ -59,6 +64,9 @@ export function App() {
             }
           >
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/datasets" element={<DatasetsPage />} />
+            <Route path="/datasets/import" element={<ImportDatasetPage />} />
+            <Route path="/datasets/:id" element={<DatasetExplorePage />} />
             <Route path="/dashboards" element={<DashboardsListPage />} />
             <Route path="/dashboards/:id" element={<DashboardViewPage />} />
             <Route path="/dashboards/:id/edit" element={<DashboardEditorPage />} />

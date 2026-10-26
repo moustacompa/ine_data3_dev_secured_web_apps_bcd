@@ -53,6 +53,7 @@ export const Navbar = () => {
             <li><NavLink to="/" end className={navClass}>Accueil</NavLink></li>
             {isAuthenticated && (
               <>
+                <li><NavLink to="/datasets" className={navClass}>Datasets</NavLink></li>
                 <li><NavLink to="/analyse" className={navClass}>Analyse</NavLink></li>
                 <li><NavLink to="/dashboards" className={navClass}>Dashboards</NavLink></li>
                 <li><NavLink to="/analyses" className={navClass}>Mes analyses</NavLink></li>

@@ -3,19 +3,21 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import BrandLogo, { BrandMark } from '../brand/BrandLogo';
 import {
-  IconAnalyze, IconChevronRight, IconCollapse, IconExpand, IconFolder, IconHome, IconLayout, IconLogout,
-  IconMenu, IconPlus, IconShare, IconShield, IconClose,
+  IconAnalyze, IconChevronRight, IconCollapse, IconDatabase, IconExpand, IconFolder, IconHome, IconLayout, IconLogout,
+  IconMenu, IconPlus, IconShare, IconShield, IconClose, IconUpload,
 } from '../icons';
 import './AppShell.css';
 
 /*
  * Espace de travail des pages authentifiées : barre latérale navy, barre
  * supérieure (fil d'Ariane, utilisateur) et zone de travail pleine largeur.
- * Seules les routes existantes de App.jsx sont proposées (pas de lien vers
- * le module Datasets P2 tant qu'il n'a pas de page).
+ * Seules les routes existantes de App.jsx sont proposées.
  */
 const NAV = [
   { to: '/', label: 'Accueil', icon: IconHome, end: true },
+  // « Datasets » reste actif sur l'exploration (/datasets/:id), pas sur l'import qui a son propre lien
+  { to: '/datasets', label: 'Datasets', icon: IconDatabase, exclude: '/datasets/import' },
+  { to: '/datasets/import', label: 'Importer un dataset', icon: IconUpload },
   { to: '/analyse', label: 'Analyse', icon: IconAnalyze },
   { to: '/mes-analyses', label: 'Mes analyses', icon: IconFolder, alias: '/analyses' },
   { to: '/dashboards', label: 'Dashboards', icon: IconLayout },
@@ -24,6 +26,9 @@ const NAV = [
 
 // Titre et parent de chaque page (fil d'Ariane), du plus précis au plus général
 const PAGES = [
+  { test: /^\/datasets\/import/, title: 'Importer', parent: { to: '/datasets', label: 'Datasets' } },
+  { test: /^\/datasets\/[^/]+/, title: 'Exploration', parent: { to: '/datasets', label: 'Datasets' } },
+  { test: /^\/datasets/, title: 'Datasets' },
   { test: /^\/analyse/, title: 'Analyse' },
   { test: /^\/(mes-analyses|analyses)/, title: 'Mes analyses' },
   { test: /^\/dashboards\/[^/]+\/edit/, title: 'Édition', parent: { to: '/dashboards', label: 'Dashboards' } },
@@ -55,7 +60,7 @@ function SideLink({ item, collapsed, onNavigate }) {
   const Icon = item.icon;
   return (
     <NavLink to={item.to} end={item.end} onClick={onNavigate} title={collapsed ? item.label : undefined}
-      className={({ isActive }) => `vz-side-link${isActive || (item.alias && pathname.startsWith(item.alias)) ? ' is-active' : ''}${item.danger ? ' is-admin' : ''}`}>
+      className={({ isActive }) => `vz-side-link${(isActive && !(item.exclude && pathname.startsWith(item.exclude))) || (item.alias && pathname.startsWith(item.alias)) ? ' is-active' : ''}${item.danger ? ' is-admin' : ''}`}>
       <Icon size={20} />
       <span className="vz-side-label">{item.label}</span>
     </NavLink>

@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "Dossiers Datasets",
+    "description": "P2 — import CSV/JSON, métadonnées, profilage, pagination, recherche, filtres et tri. Authentifiez-vous avec P1 et définissez {{token}} avant l’exécution.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" },
+    { "key": "datasetId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Dossiers Datasets",
+      "item": [
+        {
+          "name": "Lister les datasets",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/datasets" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Réponse 200', () => pm.response.to.have.status(200));", "pm.test('Liste présente', () => pm.expect(pm.response.json().data.datasets).to.be.an('array'));" ] } }]
+        },
+        {
+          "name": "Importer un CSV de démonstration",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/octet-stream" }, { "key": "X-File-Name", "value": "demo_ventes.csv" }],
+            "body": { "mode": "raw", "raw": "date,region,ventes\n2026-01-01,Nord,12\n2026-01-02,Sud,18\n2026-01-03,Nord,\n2026-01-04,Est,25", "options": { "raw": { "language": "text" } } },
+            "url": { "raw": "{{baseUrl}}/datasets/import?title=Demo%20ventes%20P2&description=Dataset%20Postman%20avec%20une%20valeur%20manquante&category=Ventes&source=Postman&format=csv", "host": ["{{baseUrl}}"], "path": ["datasets", "import"], "query": [{ "key": "title", "value": "Demo ventes P2" }, { "key": "description", "value": "Dataset Postman avec une valeur manquante" }, { "key": "category", "value": "Ventes" }, { "key": "source", "value": "Postman" }, { "key": "format", "value": "csv" }] }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Import créé', () => pm.response.to.have.status(201));", "const body = pm.response.json();", "pm.collectionVariables.set('datasetId', body.data.dataset.id);", "pm.test('Profil et score présents', () => pm.expect(body.data.dataset.profile.qualityScore).to.be.a('number'));" ] } }]
+        },
+        {
+          "name": "Lire les métadonnées",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/datasets/{{datasetId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Métadonnées présentes', () => pm.response.to.have.status(200));", "pm.expect(pm.response.json().data.dataset).to.have.property('columns');"] } }]
+        },
+        {
+          "name": "Profil et qualité",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/datasets/{{datasetId}}/profile" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Profil disponible', () => pm.response.to.have.status(200));", "pm.expect(pm.response.json().data.profile).to.have.property('qualityScore');"] } }]
+        },
+        {
+          "name": "Aperçu (10 premières lignes)",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/datasets/{{datasetId}}/preview" }
+        },
+        {
+          "name": "Lire les lignes paginées, rechercher et trier",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/datasets/{{datasetId}}/rows?page=1&pageSize=25&search=Nord&sort=ventes&direction=desc", "host": ["{{baseUrl}}"], "path": ["datasets", "{{datasetId}}", "rows"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "25" }, { "key": "search", "value": "Nord" }, { "key": "sort", "value": "ventes" }, { "key": "direction", "value": "desc" }] } }
+        },
+        {
+          "name": "Filtrer les lignes",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/datasets/{{datasetId}}/rows?filters=%5B%7B%22field%22%3A%22region%22%2C%22op%22%3A%22eq%22%2C%22value%22%3A%22Nord%22%7D%5D", "host": ["{{baseUrl}}"], "path": ["datasets", "{{datasetId}}", "rows"], "query": [{ "key": "filters", "value": "[{\"field\":\"region\",\"op\":\"eq\",\"value\":\"Nord\"}]" }] } }
+        },
+        {
+          "name": "Modifier les métadonnées",
+          "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"description\": \"Description mise à jour depuis Postman\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/datasets/{{datasetId}}" }
+        },
+        {
+          "name": "Supprimer le dataset",
+          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/datasets/{{datasetId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Dataset supprimé', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    }
+  ]
+}

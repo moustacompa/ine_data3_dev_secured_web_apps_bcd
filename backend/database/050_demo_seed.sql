@@ -32,7 +32,9 @@ BEGIN
   SELECT id INTO v_owner FROM users WHERE email = 'alice@example.com';
 
   IF NOT EXISTS (SELECT 1 FROM datasets WHERE user_id = v_owner AND title = 'Ventes 2026 (démo)') THEN
-    INSERT INTO datasets (user_id, title) VALUES (v_owner, 'Ventes 2026 (démo)') RETURNING id INTO v_ds;
+    INSERT INTO datasets (user_id, title, description, category, source, file_format)
+    VALUES (v_owner, 'Ventes 2026 (démo)', 'Ventes fictives préparées pour les démonstrations P3/P4.', 'Ventes', 'Seed pédagogique', 'csv')
+    RETURNING id INTO v_ds;
 
     -- 200 ventes « normales » (valeurs déterministes, montants entre ~80 et ~170)
     INSERT INTO dataset_rows (dataset_id, data)
@@ -51,6 +53,23 @@ BEGIN
       (v_ds, '{"date":"2026-07-21","region":"Est","produit":"Clavier","quantite":1,"montant":2}'),
       (v_ds, '{"date":"2026-09-09","region":"Ouest","produit":"Ordinateur","quantite":30,"montant":6150}');
   END IF;
+
+  UPDATE datasets d SET
+    row_count = (SELECT COUNT(*) FROM dataset_rows r WHERE r.dataset_id = d.id),
+    column_count = 5,
+    columns = '[{"name":"date","type":"date"},{"name":"region","type":"text"},{"name":"produit","type":"text"},{"name":"quantite","type":"integer"},{"name":"montant","type":"number"}]'::jsonb,
+    profile = jsonb_build_object(
+      'rowCount', (SELECT COUNT(*) FROM dataset_rows r WHERE r.dataset_id = d.id), 'columnCount', 5,
+      'missingCells', 0, 'missingPercent', 0, 'qualityScore', 100,
+      'columns', jsonb_build_array(
+        jsonb_build_object('name','date','type','date','missing',0,'missingPercent',0,'unique',(SELECT COUNT(DISTINCT data->>'date') FROM dataset_rows WHERE dataset_id=d.id)),
+        jsonb_build_object('name','region','type','text','missing',0,'missingPercent',0,'unique',(SELECT COUNT(DISTINCT data->>'region') FROM dataset_rows WHERE dataset_id=d.id)),
+        jsonb_build_object('name','produit','type','text','missing',0,'missingPercent',0,'unique',(SELECT COUNT(DISTINCT data->>'produit') FROM dataset_rows WHERE dataset_id=d.id)),
+        jsonb_build_object('name','quantite','type','integer','missing',0,'missingPercent',0,'unique',(SELECT COUNT(DISTINCT data->>'quantite') FROM dataset_rows WHERE dataset_id=d.id),'min',(SELECT MIN((data->>'quantite')::numeric) FROM dataset_rows WHERE dataset_id=d.id),'max',(SELECT MAX((data->>'quantite')::numeric) FROM dataset_rows WHERE dataset_id=d.id),'mean',(SELECT AVG((data->>'quantite')::numeric) FROM dataset_rows WHERE dataset_id=d.id)),
+        jsonb_build_object('name','montant','type','number','missing',0,'missingPercent',0,'unique',(SELECT COUNT(DISTINCT data->>'montant') FROM dataset_rows WHERE dataset_id=d.id),'min',(SELECT MIN((data->>'montant')::numeric) FROM dataset_rows WHERE dataset_id=d.id),'max',(SELECT MAX((data->>'montant')::numeric) FROM dataset_rows WHERE dataset_id=d.id),'mean',(SELECT AVG((data->>'montant')::numeric) FROM dataset_rows WHERE dataset_id=d.id))
+      )
+    )
+  WHERE d.user_id = v_owner AND d.title = 'Ventes 2026 (démo)';
 
   -- Analyses d'Alice (la page Analyse de P3 n'existe pas encore) : briques des dashboards de démo
   SELECT id INTO v_ds FROM datasets WHERE user_id = v_owner AND title = 'Ventes 2026 (démo)';
