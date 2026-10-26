@@ -4,7 +4,8 @@ import { registerUser, loginUser } from "./auth.service.js";
 // 1. Contrôleur Inscription
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, password, first_name, last_name, role } = req.body;
+        // Le champ `role` éventuellement envoyé est ignoré : le service impose le rôle analyst
+        const { email, password, first_name, last_name } = req.body;
 
         // Validation des données d'entrée
         if (!email || !password || !first_name || !last_name) {
@@ -27,7 +28,7 @@ export const register = async (req: Request, res: Response) => {
             });
         }
 
-        const result = await registerUser({ email, password, first_name, last_name, role});
+        const result = await registerUser({ email, password, first_name, last_name });
 
         return res.status(201).json({
             success: true,
