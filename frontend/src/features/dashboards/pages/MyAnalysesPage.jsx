@@ -5,6 +5,7 @@ import { errorMessage } from '../api/client';
 import AnalysisCard from '../components/AnalysisCard';
 import ShareDialog from '../components/ShareDialog';
 import { ROUTES } from '../config';
+import { IconFolder, IconPlus, IconSearch } from '../../../components/icons';
 
 export default function MyAnalysesPage() {
   const [data, setData] = useState(null);
@@ -35,21 +36,32 @@ export default function MyAnalysesPage() {
 
   return (
     <main className="db-page">
-      <header className="db-page-head">
-        <div>
-          <h1>Mes analyses</h1>
-          <p className="db-muted">Les analyses enregistrées depuis la page Analyse. Ajoutez-les à un dashboard ou partagez-les.</p>
+      <header className="db-page-head db-hero-head">
+        <div className="db-head-titles">
+          <span className="db-head-icon" aria-hidden="true"><IconFolder size={24} /></span>
+          <div>
+            <h1>Mes analyses</h1>
+            <p className="db-muted">Les analyses enregistrées depuis la page Analyse. Ajoutez-les à un dashboard ou partagez-les.</p>
+          </div>
         </div>
-        <Link className="db-btn is-primary" to={ROUTES.analysisNew}>Nouvelle analyse</Link>
+        <Link className="db-btn is-primary" to={ROUTES.analysisNew}><IconPlus /> Nouvelle analyse</Link>
       </header>
-      <input type="search" className="db-search" value={q} onChange={(e) => setQ(e.target.value)}
-        placeholder="Rechercher une analyse" aria-label="Rechercher une analyse" />
+      <div className="db-list-toolbar">
+        <label className="db-search-box">
+          <IconSearch />
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)}
+            placeholder="Rechercher une analyse" aria-label="Rechercher une analyse" />
+        </label>
+        {data && <p className="db-count">{data.items.length} analyse{data.items.length > 1 ? 's' : ''}</p>}
+      </div>
       {error && <p className="db-note" role="alert">{error}</p>}
-      {data === null && !error && <p className="db-muted">Chargement…</p>}
+      {data === null && !error && <p className="db-muted" role="status">Chargement…</p>}
       {data?.items.length === 0 && (
         <div className="db-empty">
-          <p>{q ? 'Aucune analyse ne correspond à cette recherche.' : 'Vous n’avez pas encore enregistré d’analyse.'}</p>
-          {!q && <Link className="db-btn is-primary" to={ROUTES.analysisNew}>Créer une analyse</Link>}
+          <span className="db-empty-icon" aria-hidden="true"><IconFolder size={28} /></span>
+          <p className="db-empty-title">{q ? 'Aucune analyse ne correspond à cette recherche.' : 'Vous n’avez pas encore enregistré d’analyse.'}</p>
+          {!q && <p>Construisez une analyse en quelques clics, puis sauvegardez-la pour la retrouver ici.</p>}
+          {!q && <Link className="db-btn is-primary" to={ROUTES.analysisNew}><IconPlus /> Créer une analyse</Link>}
         </div>
       )}
       <ul className="db-list">

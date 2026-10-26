@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Favicon VIZENTRA : symbole épaissi sur pastille navy, lisible en 16 px sur onglet clair ou sombre -->
+  <defs>
+    <linearGradient id="vz-g" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#0B1220"/>
+  <path d="M7.4 8.2 13.6 23.6" fill="none" stroke="url(#vz-g)" stroke-width="4.4" stroke-linecap="round"/>
+  <rect x="15.8" y="17.4" width="3.8" height="6.6" rx="1.4" fill="url(#vz-g)"/>
+  <rect x="21.6" y="8" width="3.8" height="16" rx="1.4" fill="url(#vz-g)"/>
+</svg>

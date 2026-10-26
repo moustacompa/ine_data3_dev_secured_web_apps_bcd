@@ -22,7 +22,12 @@ export const AuthProvider = ({ children }) => {
         // On demande au backend notre profil avec ce token
         const response = await api.get('/auth/me');
         if (response.data.success) {
-          setUser(response.data.data.user);
+          // /auth/me ne renvoie que { id, email, role } (contenu du JWT) : on reprend
+          // prénom et nom du profil reçu à la connexion, s'il s'agit du même compte.
+          const sessionUser = response.data.data.user;
+          let cached = null;
+          try { cached = JSON.parse(localStorage.getItem('user')); } catch { cached = null; }
+          setUser(cached && String(cached.id) === String(sessionUser.id) ? { ...cached, ...sessionUser } : sessionUser);
         }
       } catch (error) {
         console.warn('Session expirée ou invalide.');

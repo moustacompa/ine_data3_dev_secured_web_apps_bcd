@@ -1,0 +1,29 @@
+date,region,produit,canal,quantite,montant
+2026-01-05,Nord,Ordinateur,Magasin,2,1798.00
+2026-01-07,Sud,Imprimante,En ligne,3,447.50
+2026-01-09,Est,Écran,Magasin,4,756.00
+2026-01-12,Ouest,Ordinateur,En ligne,1,912.40
+2026-01-15,Nord,Clavier,En ligne,6,269.40
+2026-01-18,Sud,Ordinateur,Magasin,2,1865.00
+2026-01-21,Est,Imprimante,En ligne,1,152.90
+2026-01-24,Ouest,Écran,Magasin,3,588.00
+2026-01-28,Nord,Écran,Magasin,2,398.00
+2026-02-02,Sud,Clavier,En ligne,8,352.00
+2026-02-04,Est,Ordinateur,Magasin,1,949.00
+2026-02-08,Ouest,Imprimante,En ligne,2,301.80
+2026-02-11,Nord,Imprimante,Magasin,1,149.90
+2026-02-14,Sud,Écran,En ligne,5,965.00
+2026-02-17,Est,Clavier,Magasin,4,183.60
+2026-02-20,Ouest,Ordinateur,Magasin,2,1810.00
+2026-02-24,Nord,Ordinateur,En ligne,3,2697.00
+2026-02-27,Sud,Imprimante,Magasin,2,298.00
+2026-03-03,Est,Écran,En ligne,2,394.00
+2026-03-06,Ouest,Clavier,En ligne,7,315.00
+2026-03-09,Nord,Clavier,Magasin,5,229.50
+2026-03-12,Sud,Ordinateur,En ligne,1,929.90
+2026-03-16,Est,Ordinateur,Magasin,2,1876.00
+2026-03-19,Ouest,Écran,En ligne,4,792.00
+2026-03-22,Nord,Imprimante,En ligne,2,305.00
+2026-03-25,Sud,Clavier,Magasin,6,270.00
+2026-03-27,Est,Imprimante,Magasin,3,451.20
+2026-03-30,Ouest,Ordinateur,En ligne,1,899.00

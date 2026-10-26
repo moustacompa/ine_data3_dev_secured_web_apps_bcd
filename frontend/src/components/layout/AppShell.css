@@ -1,0 +1,217 @@
+/* ==================================================================
+   Espace de travail VIZENTRA (pages authentifiées)
+   Barre latérale navy + zone de travail claire pleine largeur.
+   Repris de l'aperçu de dashboard de la page d'accueil.
+   ================================================================== */
+.vz-shell {
+  --sb-w: 252px;
+  --top-h: 60px;
+  --ws-pad: clamp(1rem, 1.8vw, 1.75rem);
+  display: grid; grid-template-columns: var(--sb-w) minmax(0, 1fr);
+  min-height: 100vh; background: var(--vz-paper); color: var(--vz-ink);
+  color-scheme: light;
+  transition: grid-template-columns 0.22s var(--vz-ease);
+}
+.vz-shell.is-collapsed { --sb-w: 76px; }
+
+.vz-skip {
+  position: absolute; left: 1rem; top: -3rem; z-index: 300; padding: 0.5rem 0.9rem; border-radius: 8px;
+  background: var(--vz-blue); color: #fff; font-weight: 600;
+}
+.vz-skip:focus { top: 0.75rem; color: #fff; }
+
+/* ---------------------------- Barre latérale ---------------------------- */
+.vz-sidebar {
+  position: sticky; top: 0; height: 100vh; z-index: 60;
+  display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 0.75rem;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgba(37, 99, 235, 0.16), transparent 60%),
+    radial-gradient(90% 50% at 100% 100%, rgba(124, 58, 237, 0.14), transparent 60%),
+    var(--vz-navy);
+  border-right: 1px solid var(--vz-navy-line);
+  color: var(--vz-on-dark); overflow: hidden;
+}
+.vz-side-head { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem 0.5rem 0.9rem; min-height: 48px; }
+.vz-side-brand { display: inline-flex; border-radius: 8px; }
+.vz-side-brand:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+.vz-drawer-close { display: none; }
+
+.vz-side-nav { flex: 1; overflow-y: auto; overflow-x: hidden; display: grid; align-content: start; gap: 0.25rem; }
+.vz-side-nav ul { list-style: none; display: grid; gap: 0.2rem; }
+.vz-side-section {
+  margin: 0.6rem 0.75rem 0.35rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--vz-on-dark-muted); white-space: nowrap;
+}
+
+.vz-side-link {
+  position: relative; width: 100%; display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.62rem 0.75rem; border-radius: 10px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 0.9rem; font-weight: 500; text-align: left; white-space: nowrap;
+  color: var(--vz-on-dark-muted);
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+.vz-side-link svg { flex-shrink: 0; }
+.vz-side-link:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.vz-side-link:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.8); color: #fff; }
+.vz-side-link.is-active {
+  color: #fff; background: linear-gradient(90deg, rgba(37, 99, 235, 0.32), rgba(124, 58, 237, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.22);
+}
+.vz-side-link.is-active::before {
+  content: ''; position: absolute; left: -0.75rem; top: 0.55rem; bottom: 0.55rem; width: 3px; border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #60a5fa, #a78bfa);
+}
+.vz-side-link.is-active svg { color: #93c5fd; }
+.vz-side-link.is-admin { color: #fca5a5; }
+.vz-side-link.is-admin.is-active svg { color: #fca5a5; }
+
+.vz-side-foot { display: grid; gap: 0.2rem; padding-top: 0.75rem; border-top: 1px solid var(--vz-navy-line); }
+.vz-side-user {
+  display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.6rem; border-radius: 10px; color: #fff;
+  margin-bottom: 0.2rem; transition: background-color 0.18s ease;
+}
+.vz-side-user:hover, .vz-side-user.is-active { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.vz-side-user:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.8); }
+.vz-side-user-text { display: grid; gap: 0.1rem; min-width: 0; line-height: 1.2; }
+.vz-side-user-name { font-size: 0.86rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vz-side-user-role { font-size: 0.74rem; color: var(--vz-on-dark-muted); white-space: nowrap; }
+
+.vz-shell .vz-avatar {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.02em; color: #fff;
+  background: linear-gradient(135deg, var(--vz-blue), var(--vz-violet));
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+.vz-shell .vz-avatar.is-admin { background: linear-gradient(135deg, #dc2626, #9f1239); }
+
+/* Barre réduite : icônes seules, libellés conservés pour les lecteurs d'écran */
+.vz-shell.is-collapsed .vz-side-label,
+.vz-shell.is-collapsed .vz-side-section {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.vz-shell.is-collapsed .vz-side-link,
+.vz-shell.is-collapsed .vz-side-user { justify-content: center; padding-left: 0; padding-right: 0; }
+.vz-shell.is-collapsed .vz-side-head { justify-content: center; padding-left: 0; padding-right: 0; }
+.vz-shell.is-collapsed .vz-side-nav { padding-top: 0.5rem; }
+
+/* ---------------------------- Zone de travail ---------------------------- */
+.vz-workspace { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+.vz-topbar {
+  position: sticky; top: 0; z-index: 50; height: var(--top-h);
+  display: flex; align-items: center; gap: 1rem; padding: 0 var(--ws-pad);
+  background: #ffffff; border-bottom: 1px solid var(--vz-line);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+.vz-top-menu {
+  display: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--vz-line);
+  background: #fff; color: var(--vz-ink); cursor: pointer; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.vz-top-menu:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+.vz-top-title { flex: 1; min-width: 0; }
+.vz-crumbs { list-style: none; display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem; font-size: 0.88rem; }
+.vz-crumbs li { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--vz-slate); white-space: nowrap; }
+.vz-crumbs a { color: var(--vz-slate); border-radius: 4px; }
+.vz-crumbs a:hover { color: var(--vz-blue); }
+.vz-crumbs a:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+.vz-crumbs svg { color: #cbd5e1; }
+.vz-crumbs li[aria-current] span { color: var(--vz-ink); font-weight: 650; font-size: 0.95rem; }
+
+.vz-top-actions { display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0; }
+.vz-top-user {
+  display: flex; align-items: center; gap: 0.6rem; padding: 0.25rem 0.5rem 0.25rem 0.25rem; border-radius: 999px;
+  color: var(--vz-ink); border: 1px solid transparent; transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.vz-top-user:hover { background: #f1f5f9; border-color: var(--vz-line); color: var(--vz-ink); }
+.vz-top-user:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+.vz-top-user .vz-avatar { width: 34px; height: 34px; box-shadow: none; }
+.vz-top-user-text { display: grid; gap: 0.1rem; line-height: 1.15; }
+.vz-top-user-name { font-size: 0.86rem; font-weight: 600; white-space: nowrap; max-width: 12rem; overflow: hidden; text-overflow: ellipsis; }
+.vz-role {
+  justify-self: start; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.08rem 0.45rem; border-radius: 999px; background: #dbeafe; color: #1e40af;
+}
+.vz-role.is-admin { background: #fee2e2; color: #991b1b; }
+
+.vz-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.vz-content:focus { outline: none; }
+.vz-content > * { flex: 1 0 auto; }
+
+/* Les pages P1 en .container occupent aussi toute la largeur disponible */
+.vz-content > .container { max-width: none; width: 100%; padding: var(--ws-pad); }
+
+/* --------------- Jetons de marque appliqués aux pages P3 / P4 ---------------
+   Sélecteurs plus spécifiques que ceux des modules : l'espace de travail reste
+   clair et cohérent avec la barre latérale, même si le système est en sombre. */
+.vz-shell .db-page,
+.vz-shell .db-modal {
+  --db-bg: var(--vz-paper);
+  --db-surface: #ffffff;
+  --db-ink: #0f172a;
+  --db-muted: #64748b;
+  --db-line: #e2e8f0;
+  --db-soft: #f1f5f9;
+  --db-accent: #2563eb;
+  --db-accent-ink: #ffffff;
+  --db-flag: #c2690e;
+  --db-flag-soft: #fbeedd;
+  --db-danger: #b42318;
+  --db-ok: #217a4b;
+  --db-radius: 10px;
+  color-scheme: light;
+}
+.vz-shell .an-chart,
+.vz-shell .an-kpis,
+.vz-shell .an-page {
+  --an-surface: #ffffff;
+  --an-ink: #0f172a;
+  --an-muted: #64748b;
+  --an-grid: #e2e8f0;
+  --an-cursor: rgba(37, 99, 235, 0.06);
+  --an-series-1: #2563eb;
+  --an-series-2: #eb6834;
+  --an-series-3: #1baf7a;
+  --an-series-4: #eda100;
+  --an-series-5: #e87ba4;
+  --an-series-6: #008300;
+  --an-series-7: #6250d6;
+  --an-series-8: #e34948;
+}
+.vz-shell .db-page { padding: var(--ws-pad); min-height: 0; }
+
+/* ------------------------------- Responsive ------------------------------- */
+@media (max-width: 1023px) {
+  .vz-shell, .vz-shell.is-collapsed { grid-template-columns: minmax(0, 1fr); }
+  .vz-sidebar {
+    position: fixed; inset: 0 auto 0 0; width: min(288px, 86vw); z-index: 200;
+    transform: translateX(-100%); transition: transform 0.25s var(--vz-ease); visibility: hidden;
+    box-shadow: 0 20px 60px rgba(2, 6, 23, 0.45);
+  }
+  .vz-shell.is-drawer .vz-sidebar { transform: none; visibility: visible; }
+  /* Le tiroir mobile affiche toujours les libellés */
+  .vz-shell.is-collapsed .vz-side-label,
+  .vz-shell.is-collapsed .vz-side-section { position: static; width: auto; height: auto; clip: auto; }
+  .vz-shell.is-collapsed .vz-side-link,
+  .vz-shell.is-collapsed .vz-side-user { justify-content: flex-start; padding: 0.62rem 0.75rem; }
+  .vz-shell.is-collapsed .vz-side-head { justify-content: space-between; padding: 0.25rem 0.5rem 0.9rem; }
+  .vz-drawer-close {
+    display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--vz-navy-line); background: transparent; color: var(--vz-on-dark);
+  }
+  .vz-drawer-close:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.8); }
+  .vz-collapse-btn { display: none; }
+  .vz-backdrop { position: fixed; inset: 0; z-index: 150; background: rgba(2, 6, 23, 0.5); }
+  .vz-top-menu { display: inline-flex; }
+}
+@media (max-width: 640px) {
+  .vz-shell { --top-h: 56px; }
+  .vz-topbar { gap: 0.6rem; }
+  .vz-top-user-text, .vz-top-cta span { display: none; }
+  .vz-top-cta { padding: 0.5rem; }
+  .vz-crumbs li:not([aria-current]) { display: none; }
+  .vz-crumbs li[aria-current] svg { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vz-shell, .vz-sidebar, .vz-side-link { transition: none; }
+}

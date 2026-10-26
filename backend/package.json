@@ -13,7 +13,9 @@
     "dev:dashboards": "node --env-file-if-exists=.env src/modules/dashboards/dev-server.js",
     "token:demo": "node --env-file-if-exists=.env database/demo-token.js",
     "token:dashboards": "node --env-file-if-exists=.env src/modules/dashboards/dev-server.js --token",
-    "test:dashboards": "node --test \"src/modules/dashboards/tests/*.test.js\""
+    "test:dashboards": "node --test \"src/modules/dashboards/tests/*.test.js\"",
+    "test:analytics": "tsx --env-file-if-exists=.env --test \"src/modules/analytics/tests/*.test.ts\"",
+    "test:auth": "tsx --env-file-if-exists=.env --test \"src/modules/auth/tests/*.test.ts\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

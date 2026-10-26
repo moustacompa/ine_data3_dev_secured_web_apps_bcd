@@ -8,8 +8,11 @@ export interface RegisterDTO {
     password: string;
     first_name: string;
     last_name: string;
-    role?: 'admin' | 'analyst';
 }
+
+// Rôle attribué à toute inscription publique. Le rôle admin ne s'obtient que par
+// promotion d'un administrateur existant (PATCH /api/admin/users/:id/role).
+export const PUBLIC_REGISTRATION_ROLE = 'analyst';
 
 export interface UserPayload {
     id: string;
@@ -48,8 +51,8 @@ export const registerUser = async (data: RegisterDTO) => {
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
-    // C. Insertion sécurisée en base de données avec RETURNING
-    const role = data.role || 'analyst';
+    // C. Insertion sécurisée en base de données avec RETURNING (rôle imposé côté serveur)
+    const role = PUBLIC_REGISTRATION_ROLE;
     const insertSql = `
         INSERT INTO users (email, password_hash, first_name, last_name, role)
         VALUES ($1, $2, $3, $4, $5)
