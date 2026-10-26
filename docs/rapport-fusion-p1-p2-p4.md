@@ -12,6 +12,28 @@ P3 constitue l’étape d’analyse entre l’exploration et la visualisation. S
 
 ## 2. Architecture globale
 
+Le système repose sur une architecture 3-tiers découplée :
+
+```mermaid
+flowchart TD
+    Client["Front-end React 18 (P1, P2, P3, P4)"]
+    Axios["Intercepteur Axios (Bearer JWT P1)"]
+    API["Back-end Express (Node.js ESM)"]
+    AuthMW["Middleware authenticateToken (P1)"]
+    RoleMW["Middleware requireRole (P1)"]
+    ModP1["Admin & Audit (P1)"]
+    ModP2["Datasets Ingestion (P2)"]
+    ModP3["Analytics SQL (P3)"]
+    ModP4["Dashboards & Outliers (P4)"]
+    Audit["logActivity() Fail-Safe (P1)"]
+    DB[(PostgreSQL 16 Alpine)]
+
+    Client --> Axios --> API --> AuthMW --> RoleMW
+    RoleMW --> ModP1 & ModP2 & ModP3 & ModP4
+    ModP1 & ModP2 & ModP3 & ModP4 -.-> Audit --> DB
+    ModP1 & ModP2 & ModP3 & ModP4 ==>|SQL Paramétré| DB
+```
+
 Le frontend React utilise React Router pour les pages, `AuthContext` pour la session et le client Axios partagé pour les requêtes. L’intercepteur transmet le JWT. Les pages métier sont protégées par `ProtectedRoute`.
 
 Le backend Express monte les modules sous `/api/auth`, `/api/admin`, `/api/datasets`, `/api/analyses`, `/api/dashboards`, `/api/outliers` et les routes publiques P4. P1 fournit le middleware `authenticateToken`, `requireRole()` et `logActivity()`. Les services métier partagent le pool PostgreSQL.

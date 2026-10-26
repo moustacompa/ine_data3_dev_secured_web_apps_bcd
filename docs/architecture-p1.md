@@ -12,6 +12,111 @@ Le module **P1** constitue le **socle transversal et sécuritaire** de la platef
 3. **Traçabilité & Piste d'audit (Audit Trail) :** Journalisation infalsifiable et centralisée de chaque action significative via la fonction `logActivity()`.
 4. **Supervision & Espace Administrateur :** Dashboard dédié aux métriques de plateforme, à la gestion du cycle de vie des utilisateurs et à l'inspection des logs d'audit.
 
+### Schéma de l'Architecture Système 3-Tiers
+
+```mermaid
+flowchart TD
+    subgraph TIER1["Tier 1 : Frontend SPA (React 18 + Vite) - Port 3000"]
+        UI_Nav["React Router v6 / AppShell / Navbar"]
+        UI_Auth["AuthContext (State JWT & Utilisateur)"]
+        UI_Axios["Client Axios Partagé + Intercepteur Bearer Token"]
+        subgraph UI_Modules["Vues Métiers & Pages"]
+            P1_UI["P1 : Connexion, Inscription, Profil & Console Admin"]
+            P2_UI["P2 : Import CSV/JSON, Profilage & Exploration"]
+            P3_UI["P3 : Analyseur de Données & Graphiques Recharts"]
+            P4_UI["P4 : Éditeur Dashboards, Filtres & Vue Publique"]
+        end
+        UI_Nav --> UI_Auth
+        UI_Auth --> UI_Axios
+        UI_Axios --> UI_Modules
+    end
+
+    subgraph TIER2["Tier 2 : Backend API REST (Node.js 22 LTS + Express ESM) - Port 5000"]
+        MW_Pipeline["Pipeline Middlewares : CORS -> Express.JSON() -> Rate Limiter"]
+        MW_Auth["Middleware authenticateToken (P1 : Vérification signature JWT)"]
+        MW_Role["Middleware requireRole('admin') (P1 : Contrôle RBAC)"]
+        
+        subgraph API_Routers["Contrôleurs et Routeurs Express"]
+            R_P1["/api/auth & /api/admin (P1)"]
+            R_P2["/api/datasets (P2)"]
+            R_P3["/api/analytics (P3)"]
+            R_P4["/api/dashboards & /api/outliers (P4)"]
+            R_Pub["/api/public/dashboards/:token (P4 Public)"]
+        end
+
+        Service_Audit["Service d'Audit Fail-Safe : logActivity() (P1)"]
+    end
+
+    subgraph TIER3["Tier 3 : Persistance & Données (PostgreSQL 16 Docker) - Port 5435"]
+        DB[(PostgreSQL 16 Alpine)]
+        Adminer[GUI Adminer Web - Port 8080]
+        subgraph Tables["Schéma Relationnel Unifié (8 Tables)"]
+            T_P1["P1 : users (UUID), activity_logs (UUID)"]
+            T_P2["P2 : datasets, dataset_rows (JSONB)"]
+            T_P4["P4 : analyses, analysis_shares, dashboards, dashboard_shares"]
+        end
+        Tables -.-> DB
+        Adminer -.->|Inspection BDD| DB
+    end
+
+    UI_Axios ==>|Requêtes HTTP + Bearer JWT| MW_Pipeline
+    MW_Pipeline --> MW_Auth
+    MW_Auth -->|Session Valide (req.user)| MW_Role
+    MW_Role -->|Rôle Analyst / Admin| R_P2 & R_P3 & R_P4
+    MW_Role -->|Rôle Admin Requis| R_P1
+    MW_Pipeline -->|Accès Public Anonyme| R_Pub
+
+    R_P1 & R_P2 & R_P3 & R_P4 -.->|Journalisation Asynchrone| Service_Audit
+    Service_Audit ==>|INSERT activity_logs| DB
+    R_P1 & R_P2 & R_P3 & R_P4 & R_Pub ==>|Requêtes SQL Paramétrées ($1, $2)| DB
+```
+
+```text
++-----------------------------------------------------------------------------------------+
+|                        TIER 1 : FRONT-END (React 18 + Vite SPA)                         |
+|   +---------------------------------------------------------------------------------+   |
+|   |  React Router v6  ·  AuthContext (JWT State)  ·  Client Axios avec Intercepteur |   |
+|   +---------------------------------------------------------------------------------+   |
+|       |                       |                      |                     |            |
+|  [P1: Auth/Admin]      [P2: Datasets]        [P3: Analytics]        [P4: Dashboards]    |
+|  Connexion, Profil,    Upload CSV/JSON,      Moteur requetes,       Editeur widgets,    |
+|  Console Supervision   Profilage qualite     Agregations, Recharts  Filtres, Outliers   |
++-------+-----------------------+----------------------+---------------------+------------+
+        |                       |                      |                     |
+        | HTTP REST + Bearer JWT                       |                     |
+        v                       v                      v                     v
++-----------------------------------------------------------------------------------------+
+|                     TIER 2 : BACK-END (Node.js 22 LTS + Express ESM)                    |
+|  Pipeline Middlewares Securite :                                                        |
+|    CORS Filtre  --->  express.json()  --->  authenticateToken (JWT)  --->  requireRole()|
+|  -------------------------------------------------------------------------------------  |
+|   Modules & Routeurs Metiers :                                                          |
+|     • /api/auth & /api/admin   ---> Module P1 (IAM, RBAC, Supervision)                  |
+|     • /api/datasets            ---> Module P2 (Ingestion, Detection types, Profilage)   |
+|     • /api/analytics           ---> Module P3 (Moteur analytique SQL, Time-bucketing)   |
+|     • /api/dashboards,outliers ---> Module P4 (Layouts JSONB, Detection aberrations)    |
+|     • /api/public/dashboards   ---> Module P4 (Acces public sans auth + Rate-limit)     |
+|  -------------------------------------------------------------------------------------  |
+|   Service Transversal d'Audit :                                                         |
+|     • logActivity(action, entity, details)  ---> Enregistrement Fail-Safe asynchrone    |
++---------------------------------------+-------------------------------------------------+
+                                        |
+                                        | Pool PostgreSQL (pg.Pool / Port 5435)
+                                        v
++-----------------------------------------------------------------------------------------+
+|               TIER 3 : BASE DE DONNEES (PostgreSQL 16 Alpine conteneurise)              |
+|   +-------------------------+-------------------------+-----------------------------+   |
+|   |       Module P1         |        Module P2        |          Module P4          |   |
+|   +-------------------------+-------------------------+-----------------------------+   |
+|   | • users (UUID v4)       | • datasets (SERIAL)     | • analyses (JSONB)          |   |
+|   | • activity_logs (UUID)  | • dataset_rows (JSONB)  | • analysis_shares (FKs)     |   |
+|   |                         |                         | • dashboards (JSONB layout) |   |
+|   |                         |                         | • dashboard_shares (FKs)    |   |
+|   +-------------------------+-------------------------+-----------------------------+   |
+|   Conteneur annexe : Adminer Web GUI (Port 8080)                                        |
++-----------------------------------------------------------------------------------------+
+```
+
 ---
 
 ## 2. Modèle de Données & Schéma Relationnel
