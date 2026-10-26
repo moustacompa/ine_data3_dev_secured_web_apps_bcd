@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Navbar } from './components/Navbar';
+import AppShell from './components/layout/AppShell';
 
 // P1 Pages (Auth & Admin)
 import { HomePage } from './features/home/HomePage';
@@ -21,98 +22,68 @@ import {
   PublicDashboardPage,
 } from './features/dashboards';
 
+// P3 Page (Analyse & Visualisation)
+import { AnalysisPage } from './features/analytics';
+
+// Pages publiques : barre de navigation du site (accueil, connexion…)
+function PublicLayout() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <main style={{ flex: 1 }}>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
 export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Navbar />
+        <Routes>
+          {/* Routes Publiques */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/public/dashboards/:token" element={<PublicDashboardPage />} />
+          </Route>
 
-          <main style={{ flex: 1 }}>
-            <Routes>
-              {/* Routes Publiques */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/public/dashboards/:token" element={<PublicDashboardPage />} />
+          {/* Routes Protégées (Tout utilisateur authentifié) : espace de travail avec barre latérale */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppShell />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/dashboards" element={<DashboardsListPage />} />
+            <Route path="/dashboards/:id" element={<DashboardViewPage />} />
+            <Route path="/dashboards/:id/edit" element={<DashboardEditorPage />} />
+            <Route path="/mes-analyses" element={<MyAnalysesPage />} />
+            <Route path="/analyses" element={<MyAnalysesPage />} />
+            <Route path="/analyse" element={<AnalysisPage />} />
+            <Route path="/partages" element={<SharedWithMePage />} />
 
-              {/* Routes Protégées (Tout utilisateur authentifié) */}
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboards"
-                element={
-                  <ProtectedRoute>
-                    <DashboardsListPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboards/:id"
-                element={
-                  <ProtectedRoute>
-                    <DashboardViewPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboards/:id/edit"
-                element={
-                  <ProtectedRoute>
-                    <DashboardEditorPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/mes-analyses"
-                element={
-                  <ProtectedRoute>
-                    <MyAnalysesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analyses"
-                element={
-                  <ProtectedRoute>
-                    <MyAnalysesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/partages"
-                element={
-                  <ProtectedRoute>
-                    <SharedWithMePage />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Route Protégée Exclusive : Rôle Administrateur (P1) */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
 
-              {/* Route Protégée Exclusive : Rôle Administrateur (P1) */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminDashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Redirection par défaut */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-        </div>
+          {/* Redirection par défaut */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
-

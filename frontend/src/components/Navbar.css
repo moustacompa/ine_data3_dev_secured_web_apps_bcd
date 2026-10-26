@@ -1,0 +1,102 @@
+/* ==================================================================
+   Navigation VIZENTRA
+   is-light : pages applicatives (fond blanc) · is-dark : accueil (navy,
+   prolonge la section hero). Menu repliable sous 900 px.
+   ================================================================== */
+.vz-nav {
+  position: sticky; top: 0; z-index: 100;
+  --nav-bg: rgba(255, 255, 255, 0.86);
+  --nav-line: var(--vz-line);
+  --nav-ink: var(--vz-ink);
+  --nav-muted: var(--vz-slate-ink);
+  --nav-hover-bg: rgba(15, 23, 42, 0.05);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-line);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+}
+.vz-nav.is-dark {
+  /* quasi opaque : la barre précède le hero, un fond translucide virerait au gris sur le blanc */
+  --nav-bg: rgba(11, 18, 32, 0.97);
+  --nav-line: var(--vz-navy-line);
+  --nav-ink: #ffffff;
+  --nav-muted: var(--vz-on-dark);
+  --nav-hover-bg: rgba(255, 255, 255, 0.07);
+}
+
+.vz-nav-inner {
+  max-width: var(--vz-container); margin: 0 auto; padding: 0.7rem 1.5rem;
+  display: flex; align-items: center; gap: 2rem;
+}
+.vz-nav-brand { display: inline-flex; border-radius: var(--vz-radius-sm); }
+.vz-nav-brand:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+
+.vz-nav-menu { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-width: 0; }
+.vz-nav-links { list-style: none; display: flex; align-items: center; gap: 0.25rem; }
+
+.vz-nav-link {
+  position: relative; display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.45rem 0.75rem; border-radius: var(--vz-radius-sm);
+  font-size: 0.9rem; font-weight: 500; color: var(--nav-muted);
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.vz-nav-link:hover { color: var(--nav-ink); background: var(--nav-hover-bg); }
+.vz-nav-link:focus-visible { outline: none; box-shadow: var(--vz-focus); color: var(--nav-ink); }
+/* Soulignement animé de la page courante */
+.vz-nav-link::after {
+  content: ''; position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.2rem; height: 2px; border-radius: 2px;
+  background: var(--vz-gradient); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s var(--vz-ease);
+}
+.vz-nav-link.is-active { color: var(--nav-ink); }
+.vz-nav-link.is-active::after { transform: scaleX(1); }
+.vz-nav-link.is-admin { color: #dc2626; font-weight: 600; }
+.vz-nav.is-dark .vz-nav-link.is-admin { color: #fca5a5; }
+
+.vz-nav-actions { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.vz-nav-user { display: flex; align-items: center; gap: 0.55rem; padding: 0.2rem 0.4rem; border-radius: var(--vz-radius-sm); }
+.vz-nav-user:hover { background: var(--nav-hover-bg); }
+.vz-nav-user:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+.vz-avatar {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
+  font-weight: 700; font-size: 0.85rem; color: #ffffff;
+  background: linear-gradient(135deg, var(--vz-blue), var(--vz-violet));
+}
+.vz-avatar.is-admin { background: linear-gradient(135deg, #dc2626, #9f1239); }
+.vz-nav-user-text { display: grid; gap: 0.15rem; line-height: 1.15; }
+.vz-nav-user-name {
+  font-size: 0.85rem; font-weight: 600; color: var(--nav-ink); white-space: nowrap;
+  max-width: 14rem; overflow: hidden; text-overflow: ellipsis;
+}
+.vz-nav-user .badge { font-size: 0.62rem; justify-self: start; }
+
+.vz-nav-toggle {
+  display: none; margin-left: auto; width: 40px; height: 40px; border-radius: var(--vz-radius-sm);
+  border: 1px solid var(--nav-line); background: transparent; color: var(--nav-ink); cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.vz-nav-toggle:focus-visible { outline: none; box-shadow: var(--vz-focus); }
+
+/* Boutons ghost adaptés au fond de la barre */
+.vz-nav .vz-btn-ghost { color: var(--nav-ink); border-color: var(--nav-line); }
+.vz-nav .vz-btn-ghost:hover { background: var(--nav-hover-bg); color: var(--nav-ink); }
+
+@media (max-width: 900px) {
+  .vz-nav-inner { flex-wrap: wrap; gap: 0; padding: 0.65rem 1rem; }
+  .vz-nav-toggle { display: inline-flex; }
+  .vz-nav-menu {
+    display: none; flex-basis: 100%; flex-direction: column; align-items: stretch; gap: 1rem;
+    padding: 0.85rem 0 0.5rem; margin-top: 0.65rem; border-top: 1px solid var(--nav-line);
+  }
+  .vz-nav.is-open .vz-nav-menu { display: flex; animation: vz-nav-in 0.2s var(--vz-ease); }
+  .vz-nav-links { flex-direction: column; align-items: stretch; gap: 0.15rem; }
+  .vz-nav-link { padding: 0.65rem 0.75rem; }
+  .vz-nav-link::after { display: none; }
+  .vz-nav-link.is-active { background: var(--nav-hover-bg); }
+  .vz-nav-actions { flex-wrap: wrap; justify-content: space-between; }
+}
+@keyframes vz-nav-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .vz-nav.is-open .vz-nav-menu { animation: none; }
+  .vz-nav-link, .vz-nav-link::after { transition: none; }
+}

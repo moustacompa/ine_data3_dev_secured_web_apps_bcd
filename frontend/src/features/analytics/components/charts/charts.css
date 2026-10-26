@@ -1,0 +1,113 @@
+/* ==================================================================
+   Graphiques P3 (Recharts) — styles préfixés .an-
+   Importés par charts/index.js : ils s'appliquent aussi dans les widgets
+   des dashboards P4. Palette catégorielle validée (daltonisme : ΔE ≥ 8
+   entre séries voisines, en clair comme en sombre) ; le texte garde
+   toujours l'encre normale, seules les marques portent la couleur.
+   ================================================================== */
+.an-chart,
+.an-kpis,
+.an-page {
+  --an-surface: #ffffff;
+  --an-ink: #1e2a3a;
+  --an-muted: #5b6676;
+  --an-grid: #e3e8ee;
+  --an-cursor: rgba(30, 42, 58, 0.06);
+  --an-series-1: #2a78d6;
+  --an-series-2: #eb6834;
+  --an-series-3: #1baf7a;
+  --an-series-4: #eda100;
+  --an-series-5: #e87ba4;
+  --an-series-6: #008300;
+  --an-series-7: #6250d6;
+  --an-series-8: #e34948;
+}
+
+@media (prefers-color-scheme: dark) {
+  .an-chart,
+  .an-kpis,
+  .an-page {
+    --an-surface: #1c2430;
+    --an-ink: #e4e9f0;
+    --an-muted: #9aa6b6;
+    --an-grid: #2d3a4b;
+    --an-cursor: rgba(228, 233, 240, 0.08);
+    --an-series-1: #3987e5;
+    --an-series-2: #d95926;
+    --an-series-3: #199e70;
+    --an-series-4: #c98500;
+    --an-series-5: #d55181;
+    --an-series-6: #008300;
+    --an-series-7: #9085e9;
+    --an-series-8: #e66767;
+  }
+}
+
+.an-chart {
+  margin: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 0.4rem;
+  color: var(--an-ink); font-variant-numeric: tabular-nums;
+}
+.an-chart-title { font-weight: 600; font-size: 0.95rem; }
+.an-chart-plot { position: relative; flex: 1; min-height: 120px; }
+.an-chart-plot > .recharts-responsive-container { position: absolute; inset: 0; }
+/* Toutes les catégories : défilement vertical interne (barres horizontales) */
+.an-chart-scroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
+.an-chart-scroll:focus-visible { outline: 2px solid var(--an-series-1); outline-offset: -2px; }
+.an-chart-note { margin: 0; padding: 0 0.5rem; font-size: 0.8rem; color: var(--an-muted); }
+.an-chart-empty {
+  height: 100%; min-height: 6rem; display: grid; place-items: center; text-align: center;
+  color: var(--an-muted); font-size: 0.9rem;
+}
+.an-chart .recharts-text { font-family: inherit; }
+.an-chart .recharts-surface:focus,
+.an-chart .recharts-wrapper:focus { outline: none; }
+
+/* Légende : pastille colorée, texte à l'encre normale */
+.an-legend {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem;
+  font-size: 0.8rem; color: var(--an-ink); padding: 0 0.5rem;
+}
+.an-legend li { display: inline-flex; align-items: center; gap: 0.35rem; }
+.an-legend i { display: inline-block; width: 0.65rem; height: 0.65rem; border-radius: 2px; flex-shrink: 0; }
+.an-pie-legend b { font-weight: 600; color: var(--an-muted); margin-left: 0.15rem; }
+
+/* Infobulle */
+.an-tooltip {
+  background: var(--an-surface); color: var(--an-ink); border: 1px solid var(--an-grid);
+  border-radius: 6px; padding: 0.45rem 0.6rem; font-size: 0.8rem; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  min-width: 9rem;
+}
+.an-tooltip-label { margin: 0 0 0.25rem; font-weight: 600; }
+.an-tooltip ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.an-tooltip li { display: flex; align-items: center; gap: 0.4rem; }
+.an-tooltip li i { width: 0.55rem; height: 0.55rem; border-radius: 2px; flex-shrink: 0; }
+.an-tooltip li span { color: var(--an-muted); }
+.an-tooltip li b { margin-left: auto; font-weight: 600; padding-left: 0.75rem; }
+
+/* KPI */
+.an-kpis {
+  height: 100%; display: grid; gap: 0.75rem; align-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); color: var(--an-ink);
+  font-variant-numeric: tabular-nums;
+}
+.an-kpi {
+  display: flex; flex-direction: column; gap: 0.2rem; padding: 0.75rem 0.9rem;
+  border: 1px solid var(--an-grid); border-radius: 8px; background: var(--an-surface);
+}
+.an-kpis.is-single .an-kpi { border: 0; padding: 0; background: none; }
+.an-kpi-label { font-size: 0.82rem; color: var(--an-muted); }
+.an-kpi-value { font-size: clamp(1.4rem, 2.8vw, 2.1rem); font-weight: 650; letter-spacing: -0.02em; line-height: 1.15; }
+
+/* Page Analyse : cartes KPI détaillées (même esprit que l'aperçu de l'accueil) */
+.an-chart-box .an-kpis { grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.85rem; }
+.an-chart-box .an-kpi {
+  position: relative; overflow: hidden; gap: 0.35rem; padding: 1.1rem 1.2rem 1.15rem; border-radius: 14px;
+  border: 1px solid var(--an-grid); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 24px -18px rgba(15, 23, 42, 0.25);
+}
+.an-chart-box .an-kpi::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6 60%, #22d3ee);
+}
+.an-chart-box .an-kpis.is-single .an-kpi { border: 1px solid var(--an-grid); padding: 1.4rem 1.5rem; background: var(--an-surface); }
+.an-chart-box .an-kpi-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.an-chart-box .an-kpi-value { font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 750; }

@@ -1,9 +1,9 @@
 /**
  * Source des composants graphiques.
  *
- * Tant que P3 n'a pas livré ses composants, on utilise les mocks.
- * À l'intégration, remplacer la ligne ci-dessous par l'import de P3, par ex. :
- *   export { BarChart, LineChart, PieChart, KpiCard, Histogram } from '../../analytics/components/charts';
- * Contrat de props : { data, x, y, title }.
+ * [INTÉGRATION P3] Composants Recharts du module Analyse (même contrat de props
+ * { data, x, y, title, options }). Pour revenir aux graphiques SVG de
+ * remplacement, réactiver la ligne commentée ci-dessous à la place.
+ *   export { BarChart, LineChart, PieChart, KpiCard, Histogram } from './mockCharts';
  */
-export { BarChart, LineChart, PieChart, KpiCard, Histogram } from './mockCharts';
+export { BarChart, LineChart, PieChart, KpiCard, Histogram } from '../../analytics/components/charts';

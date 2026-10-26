@@ -4,7 +4,9 @@ import { dashboardsApi } from '../api/dashboardsApi';
 import { errorMessage } from '../api/client';
 import VisibilityBadge from '../components/VisibilityBadge';
 import Modal from '../components/Modal';
+import ShareDialog from '../components/ShareDialog';
 import { ROUTES, formatDate } from '../config';
+import { IconEye, IconLayout, IconPencil, IconPlus, IconSearch, IconShare, IconTrash } from '../../../components/icons';
 
 export default function DashboardsListPage() {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ export default function DashboardsListPage() {
   const [q, setQ] = useState('');
   const [error, setError] = useState(null);
   const [creating, setCreating] = useState(false);
+  const [sharing, setSharing] = useState(null);
   const [form, setForm] = useState({ title: '', description: '' });
 
   useEffect(() => {
@@ -38,47 +41,73 @@ export default function DashboardsListPage() {
     } catch (err) { setError(errorMessage(err)); }
   };
 
+  const replace = (d) => {
+    setData((prev) => ({ ...prev, items: prev.items.map((x) => (x.id === d.id ? { ...x, ...d } : x)) }));
+    setSharing((s) => (s && s.id === d.id ? { ...s, ...d } : s));
+  };
+
   return (
     <main className="db-page">
-      <header className="db-page-head">
-        <div>
-          <h1>Mes dashboards</h1>
-          <p className="db-muted">Regroupez vos analyses, ajoutez des filtres communs et partagez le résultat.</p>
+      <header className="db-page-head db-hero-head">
+        <div className="db-head-titles">
+          <span className="db-head-icon" aria-hidden="true"><IconLayout size={24} /></span>
+          <div>
+            <h1>Mes dashboards</h1>
+            <p className="db-muted">Regroupez vos analyses, ajoutez des filtres communs et partagez le résultat.</p>
+          </div>
         </div>
-        <button type="button" className="db-btn is-primary" onClick={() => setCreating(true)}>Nouveau dashboard</button>
+        <button type="button" className="db-btn is-primary" onClick={() => setCreating(true)}><IconPlus /> Nouveau dashboard</button>
       </header>
 
-      <input type="search" className="db-search" value={q} onChange={(e) => setQ(e.target.value)}
-        placeholder="Rechercher un dashboard" aria-label="Rechercher un dashboard" />
+      <div className="db-list-toolbar">
+        <label className="db-search-box">
+          <IconSearch />
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)}
+            placeholder="Rechercher un dashboard" aria-label="Rechercher un dashboard" />
+        </label>
+        {data && <p className="db-count">{data.items.length} dashboard{data.items.length > 1 ? 's' : ''}</p>}
+      </div>
       {error && <p className="db-note" role="alert">{error}</p>}
-      {data === null && !error && <p className="db-muted">Chargement…</p>}
+      {data === null && !error && <p className="db-muted" role="status">Chargement…</p>}
 
       {data?.items.length === 0 && (
         <div className="db-empty">
-          <p>{q ? 'Aucun dashboard ne correspond à cette recherche.' : 'Créez votre premier dashboard pour assembler vos analyses.'}</p>
-          {!q && <button type="button" className="db-btn is-primary" onClick={() => setCreating(true)}>Nouveau dashboard</button>}
+          <span className="db-empty-icon" aria-hidden="true"><IconLayout size={28} /></span>
+          <p className="db-empty-title">{q ? 'Aucun dashboard ne correspond à cette recherche.' : 'Aucun dashboard pour le moment'}</p>
+          {!q && <p>Créez votre premier dashboard pour assembler vos analyses enregistrées et les partager.</p>}
+          {!q && <button type="button" className="db-btn is-primary" onClick={() => setCreating(true)}><IconPlus /> Nouveau dashboard</button>}
         </div>
       )}
 
-      <ul className="db-list">
-        {data?.items.map((d) => (
-          <li key={d.id} className="db-list-item">
-            <div className="db-list-main">
-              <Link to={ROUTES.dashboard(d.id)}><strong>{d.title}</strong></Link>
-              {d.description && <p>{d.description}</p>}
-              <p className="db-meta">
-                {d.widgetCount} widget{d.widgetCount > 1 ? 's' : ''}, modifié le {formatDate(d.updatedAt)}
-                {d.visibility === 'public' && `, ${d.viewCount} vue${d.viewCount > 1 ? 's' : ''} publique${d.viewCount > 1 ? 's' : ''}`}
-              </p>
-            </div>
-            <VisibilityBadge visibility={d.visibility} />
-            <div className="db-list-actions">
-              <Link className="db-btn" to={ROUTES.dashboardEdit(d.id)}>Modifier</Link>
-              <button type="button" className="db-link-btn is-danger" onClick={() => remove(d)}>Supprimer</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {!!data?.items.length && (
+        <ul className="db-card-grid">
+          {data.items.map((d) => (
+            <li key={d.id} className="db-dash-card">
+              <div className="db-dash-thumb" aria-hidden="true">
+                <span style={{ '--h': '45%' }} /><span style={{ '--h': '72%' }} /><span style={{ '--h': '58%' }} /><span style={{ '--h': '88%' }} />
+              </div>
+              <div className="db-dash-body">
+                <div className="db-dash-title">
+                  <Link to={ROUTES.dashboard(d.id)}><strong>{d.title}</strong></Link>
+                  <VisibilityBadge visibility={d.visibility} />
+                </div>
+                <p className="db-dash-desc">{d.description || 'Sans description'}</p>
+                <p className="db-meta">
+                  {d.widgetCount} widget{d.widgetCount > 1 ? 's' : ''} · modifié le {formatDate(d.updatedAt)}
+                  {d.visibility === 'public' && ` · ${d.viewCount} vue${d.viewCount > 1 ? 's' : ''} publique${d.viewCount > 1 ? 's' : ''}`}
+                </p>
+              </div>
+              <div className="db-dash-actions">
+                <Link className="db-btn is-primary" to={ROUTES.dashboard(d.id)}><IconEye /> Consulter</Link>
+                <Link className="db-btn" to={ROUTES.dashboardEdit(d.id)}><IconPencil /> Modifier</Link>
+                <button type="button" className="db-btn" onClick={() => setSharing(d)}><IconShare size={18} /> Partager</button>
+                <button type="button" className="db-icon-btn is-danger db-delete" onClick={() => remove(d)}
+                  aria-label={`Supprimer ${d.title}`} title="Supprimer"><IconTrash /></button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Modal open={creating} onClose={() => setCreating(false)} title="Nouveau dashboard">
         <form className="db-stack" onSubmit={create}>
@@ -93,6 +122,7 @@ export default function DashboardsListPage() {
           <div className="db-actions"><button type="submit" className="db-btn is-primary">Créer et ajouter des widgets</button></div>
         </form>
       </Modal>
+      <ShareDialog open={!!sharing} onClose={() => setSharing(null)} kind="dashboard" resource={sharing} onUpdated={replace} />
     </main>
   );
 }

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 32" role="img" aria-labelledby="t">
+  <title id="t">VIZENTRA</title>
+  <!-- Logo principal (fond light) : symbole + mot-symbole en Manrope ExtraBold, interlettrage 0.14em -->
+  <defs>
+    <linearGradient id="vz-g" x1="4" y1="28" x2="29" y2="5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <path d="M5.6 6.2 13.4 25.6" fill="none" stroke="url(#vz-g)" stroke-width="4.6" stroke-linecap="round"/>
+  <rect x="15.6" y="18.8" width="3.7" height="7.2" rx="1.5" fill="url(#vz-g)"/>
+  <rect x="20.8" y="12.6" width="3.7" height="13.4" rx="1.5" fill="url(#vz-g)"/>
+  <rect x="26" y="6" width="3.7" height="20" rx="1.5" fill="url(#vz-g)"/>
+  <text x="42" y="23.2" fill="#0B1220" font-family="Manrope, 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif"
+    font-size="19" font-weight="800" letter-spacing="2.7">VIZENTRA</text>
+</svg>
